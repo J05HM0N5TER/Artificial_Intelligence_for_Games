@@ -26,9 +26,38 @@ public:
 		m_edges.erase(iter);
 	}
 
-	std::vector<edge<T>*> m_edges;
+	void reset()
+	{
+		m_previous = nullptr;
+		m_g_score = 0;
+	}
+
+	void set_valid(bool a_is_valid)
+	{
+		for (size_t i = 0; i < m_edges.size(); i++)
+		{
+			m_edges[i]->is_valid = a_is_valid;
+		}
+	}
+
+	bool is_valid()
+	{
+		for (size_t i = 0; i < m_edges.size(); i++)
+		{
+			if (m_edges[i]->is_valid)
+			{
+				return true;
+			}
+		}
+		return false;
+	}
+
 //private:
+	std::vector<edge<T>*> m_edges;
 	T m_data;
+
+	node<T>* m_previous = nullptr;
+	float m_g_score = 0;
 };
 
 #endif // !NODE_H
