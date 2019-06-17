@@ -2,6 +2,8 @@
 
 #include "Application.h"
 #include "Renderer2D.h"
+#include "graph.h"
+#include "Vector2.h"
 
 class Application2D : public aie::Application {
 public:
@@ -19,6 +21,8 @@ protected:
 
 	aie::Renderer2D*	m_2dRenderer;
 	aie::Font*			m_font;
+
+	graph<Vector2>* m_graph;
 
 	float m_timer;
 };
