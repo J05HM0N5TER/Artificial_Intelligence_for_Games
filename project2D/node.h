@@ -51,6 +51,18 @@ public:
 		}
 	}
 
+	void toggle_valid()
+	{
+		if (is_valid())
+		{
+			set_valid(false);
+		}
+		else
+		{
+			set_valid(true);
+		}
+	}
+
 	/*!	\brief Tells if total state of the node according to the connected edges.
 		\return True if there is any valid edges connected to the node.
 	*/
@@ -67,8 +79,8 @@ public:
 		return false;
 	}
 
-//private:
-	// All the the edges connected the node.
+	//private:
+		// All the the edges connected the node.
 	std::vector<edge<T>*> m_edges;
 	// The data that is being stored in the node.
 	T m_data;

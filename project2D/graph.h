@@ -105,9 +105,12 @@ public:
 		}
 
 		// Create the lists used to keep track of the nodes when traversing graph.
+		// Open list is the nodes that have yet to be checked.
 		std::list<node<T>*> open_list;
+		// Closed list is nodes that have been checked already.
 		std::list<node<T>*> closed_list;
 
+		// Add the start node to the open list to start path-finding.
 		open_list.push_back(a_start);
 
 		node<T>* current_node;
@@ -117,7 +120,7 @@ public:
 			current_node = open_list.front();
 			open_list.pop_front();
 
-			// Add the 
+			// Add the current node to the closed list due it being checked now.
 			closed_list.push_back(current_node);
 
 			for (auto& a_edge : current_node->m_edges)
