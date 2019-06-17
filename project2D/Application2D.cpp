@@ -259,12 +259,12 @@ void Application2D::draw()
 
 	m_2dRenderer->drawText(m_font, left_mouse_text, 0.0f, left_mouse_text_position);
 
-	const char shift_text[] = "Press and hold left shift and right mouse to deactivate node.";
+	const char shift_text[] = "Press and hold left shift and right mouse to deactivate nodes.";
 	int shift_text_position = left_mouse_text_position - m_font->getStringHeight(left_mouse_text);
 
 	m_2dRenderer->drawText(m_font, shift_text, 0.0f, shift_text_position);
 	
-	const char control_text[] = "Press and hold left control and right mouse to activate node.";
+	const char control_text[] = "Press and hold left control and right mouse to activate nodes.";
 	int control_text_position = shift_text_position - m_font->getStringHeight(shift_text);
 
 	m_2dRenderer->drawText(m_font, control_text, 0.0f, control_text_position);
