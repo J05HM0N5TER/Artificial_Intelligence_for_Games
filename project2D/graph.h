@@ -97,7 +97,9 @@ public:
 			for (auto& a_edge : current_node->m_edges)
 			{
 				if (!a_edge->is_valid)
+				{
 					continue;
+				}
 
 				node<T>* other_node = nullptr;
 				if (a_edge->m_nodes[0] == current_node)
@@ -115,13 +117,13 @@ public:
 
 				if (std::find(std::begin(closed_list), std::end(closed_list), other_node) == closed_list.end())
 				{
-					int current_g_score = current_node->m_g_score + 1/*Edge weight*/;
+					int current_g_score = current_node->m_g_score + a_edge->m_weight;
 
 					// If the other_nodes is not in the open_list
 					if (std::find(std::begin(open_list), std::end(open_list), other_node) == open_list.end())
 					{
 						// Set the current_g_score for the other_node.
-						other_node->m_g_score = current_node->m_g_score + 1 /*Edge weight*/;
+						other_node->m_g_score = current_node->m_g_score + a_edge->m_weight;
 
 						other_node->m_previous = current_node;
 
