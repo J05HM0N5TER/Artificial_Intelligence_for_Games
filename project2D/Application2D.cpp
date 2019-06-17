@@ -70,7 +70,7 @@ void Application2D::draw() {
 		m_2dRenderer->drawLine(A->m_data.x, A->m_data.y, B->m_data.x, B->m_data.y, 2.0f);
 	}
 
-	for (auto a_nodes : m_graph->m_nodes)
+	for (auto& a_nodes : m_graph->m_nodes)
 	{
 		m_2dRenderer->drawCircle(a_nodes->m_data.x, a_nodes->m_data.y, 10.0f);
 	}
