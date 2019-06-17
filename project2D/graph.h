@@ -69,11 +69,13 @@ public:
 		m_path.clear();
 
 
+		// If any of the pointers point to NULL
 		if (!a_start || !a_end)
 		{
 			return m_path;
 		}
 
+		// If the start and the end are the same position.
 		if (a_start == a_end)
 		{
 			m_path.push_back(a_start);
@@ -96,11 +98,13 @@ public:
 
 			for (auto& a_edge : current_node->m_edges)
 			{
+				// Skip this edge if it is disabled.
 				if (!a_edge->is_valid)
 				{
 					continue;
 				}
 
+				// Set up when end of the edge is being tested.
 				node<T>* other_node = nullptr;
 				if (a_edge->m_nodes[0] == current_node)
 				{
@@ -117,7 +121,7 @@ public:
 
 				if (std::find(std::begin(closed_list), std::end(closed_list), other_node) == closed_list.end())
 				{
-					int current_g_score = current_node->m_g_score + a_edge->m_weight;
+					float current_g_score = current_node->m_g_score + a_edge->m_weight;
 
 					// If the other_nodes is not in the open_list
 					if (std::find(std::begin(open_list), std::end(open_list), other_node) == open_list.end())
@@ -143,10 +147,21 @@ public:
 			}
 		}
 
+
+		// Will get here if there is no more paths to check.
 		node<T>* end_node = a_end;
 		m_path.push_back(end_node);
+
+		// Backtrack the best path.
 		while (end_node != a_start)
 		{
+			// If there is no valid path.
+			if (!end_node)
+			{
+				m_path.clear();
+				return m_path;
+			}
+
 			end_node = end_node->m_previous;
 			m_path.push_back(end_node);
 		}
@@ -154,9 +169,12 @@ public:
 	}
 
 	//private:
+	// The previosuly found path.
 	std::vector<node<T>*> m_path;
 
+	// The nodes that are in the graph.
 	std::vector<node<T>*> m_nodes;
+	// The edges that are in the graph.
 	std::vector<edge<T>*> m_edges;
 };
 
