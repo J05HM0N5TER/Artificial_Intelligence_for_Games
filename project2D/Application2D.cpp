@@ -4,15 +4,18 @@
 #include "Input.h"
 #include "Circle.h"
 
-Application2D::Application2D() {
+Application2D::Application2D() 
+{
 
 }
 
-Application2D::~Application2D() {
+Application2D::~Application2D() 
+{
 
 }
 
-bool Application2D::startup() {
+bool Application2D::startup() 
+{
 	
 	m_2dRenderer = new aie::Renderer2D();
 
@@ -27,6 +30,7 @@ bool Application2D::startup() {
 	int width = 31;
 	int height = 17;
 
+	// Create nodes.
 	for (int i = 0; i < height; ++i)
 	{
 		for (int j = 0; j < width; j++)
@@ -35,7 +39,7 @@ bool Application2D::startup() {
 		}
 	}
 
-	// Horizontals
+	// Connect horizontally
 	for (int i = 0; i < height; ++i)
 	{
 		for (int j = 0; j < width - 1; j++)
@@ -46,7 +50,7 @@ bool Application2D::startup() {
 		}
 	}
 
-	// Verticals
+	// Connect vertically
 	for (int i = 0; i < height - 1; ++i)
 	{
 		for (int j = 0; j < width; j++)
@@ -57,17 +61,19 @@ bool Application2D::startup() {
 		}
 	}
 
-	// Diagonal
+	// Connect diagonally
 	for (int i = 0; i < height; ++i)
 	{
 		for (int j = 0; j < width; j++)
 		{
+			// Down to the right '\'.
 			if (j > 0 && i < height - 1)
 			{
 				m_graph->create_edge(
 					m_graph->m_nodes[i * width + j],
 					m_graph->m_nodes[(i + 1) * width + (j - 1)], 1.42f);
 			}
+			// Up to the right '/'.
 			if (j < width - 1 && i < height - 1)
 			{
 				m_graph->create_edge(
@@ -77,38 +83,31 @@ bool Application2D::startup() {
 		}
 	}
 
-	/*auto node_A = m_graph->create_node({ 100, 100 });
-	auto node_B = m_graph->create_node({ 100, 300 });
-	auto node_C = m_graph->create_node({ 300, 100 });
-	auto node_D = m_graph->create_node({ 300, 300 });
-
-	m_graph->create_edge(node_A, node_B);
-	m_graph->create_edge(node_B, node_D);
-	m_graph->create_edge(node_D, node_C);
-	m_graph->create_edge(node_C, node_A);*/
-
 	return true;
 }
 
-void Application2D::shutdown() {
+void Application2D::shutdown() 
+{
 	
 	delete m_font;
 	delete m_2dRenderer;
+	delete m_graph;
 }
 
-void Application2D::update(float deltaTime) {
+void Application2D::update(float deltaTime) 
+{
 
 	m_timer += deltaTime;
 
 	// input example
 	aie::Input* input = aie::Input::getInstance();
-
 	
 
 	// Terrible order N lookup.
 	float shortes_distance = FLT_MAX;
 	node<Vector2>* closest_node;
 
+	// Select node.
 	if (input->wasMouseButtonPressed(0))
 	{
 		Vector2 mouse_pos(float(input->getMouseX()), float(input->getMouseY()));
@@ -135,7 +134,7 @@ void Application2D::update(float deltaTime) {
 	}
 
 
-	
+	// Disable node.
 	else if (input->wasMouseButtonPressed(aie::INPUT_MOUSE_BUTTON_RIGHT))
 	{
 		Vector2 mouse_pos(float(input->getMouseX()), float(input->getMouseY()));
@@ -159,7 +158,8 @@ void Application2D::update(float deltaTime) {
 		quit();
 }
 
-void Application2D::draw() {
+void Application2D::draw() 
+{
 
 	// wipe the screen to the background colour
 	clearScreen();
@@ -170,15 +170,16 @@ void Application2D::draw() {
 	// Draw lines edges.
 	for (auto& a_edge : m_graph->m_edges)
 	{
+		// Set colour of edge depending on if it is active.
 		if (a_edge->is_valid)
 		{
-			m_2dRenderer->setRenderColour(1, 1, 1, 1);
+			// Black if valid.
+			m_2dRenderer->setRenderColour(1.0f, 1.0f, 1.0f, 1);
 		}
 		else
 		{
+			// Gray if not.
 			m_2dRenderer->setRenderColour(0.3f, 0.3f, 0.3f, 1);
-			//continue;
-
 		}
 			node<Vector2>* A = a_edge->m_nodes[0];
 			node<Vector2>* B = a_edge->m_nodes[1];
@@ -186,9 +187,10 @@ void Application2D::draw() {
 		
 	}
 
-	// Edges?!
+	// Draw the path.
 	for (int i = 0; i < int(m_graph->m_path.size()) - 1; ++i)
 	{
+		// Set colour to red.
 		m_2dRenderer->setRenderColour(1.0f, 0.0f, 0.0f, 1);
 
 		node<Vector2>* A = m_graph->m_path[i];
@@ -200,20 +202,24 @@ void Application2D::draw() {
 	// Draw nodes.
 	for (auto& a_nodes : m_graph->m_nodes)
 	{
+		// Set colour of node depending on if it has any active edges connected to it.
 		if (a_nodes->is_valid())
 		{
+			// Black if valid.
 			m_2dRenderer->setRenderColour(1.0f, 1.0f, 1.0f, 1);
 		}
 		else
 		{
+			// Gray if not.
 			m_2dRenderer->setRenderColour(0.3f, 0.3f, 0.3f, 1);
 		}
 
 		m_2dRenderer->drawCircle(a_nodes->m_data.x, a_nodes->m_data.y, 5.0f);
 	}
 
-
+	// Reset colour.
 	m_2dRenderer->setRenderColour(1.0f, 0.0f, 0.0f, 1);
+
 
 	// Display selected nodes.
 	if (m_selection_queue.size() > 0)

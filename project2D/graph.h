@@ -25,6 +25,10 @@ public:
 		}
 	}
 
+	/*!	\brief Creates a new node
+		\param a_data The data that is being stored int the node.
+		\return The pointer to the new node.
+	*/
 	node<T>* create_node(const T& a_data)
 	{
 		node<T>* new_node = new node<T>(a_data);
@@ -32,7 +36,12 @@ public:
 		return new_node;
 	}
 
-
+	/*!	\brief Creates a new edge to connect two nodes.
+		\param a_node_A The first node that is being connected.
+		\param a_node_B The second node that is being connected.
+		\param a_weight The 'cost' that it takes to traverse the edge in path-finding.
+		\return The pointer to the new edge.
+	*/
 	edge<T>* create_edge(node<T>* a_node_A, node<T>* a_node_B, float a_weight = 1.0f)
 	{
 		edge<T>* new_edge = new edge<T>(a_node_A, a_node_B, a_weight);
@@ -40,6 +49,9 @@ public:
 		return new_edge;
 	}
 
+	/*!	\brief Removes a specified node from the graph.
+		\param The pointer to the node that is being removed.
+	*/
 	void remove_node(node<T>* a_node)
 	{
 
@@ -53,19 +65,29 @@ public:
 		m_nodes.erase(iter);
 	}
 
+	/*!	\brief Removes a specified edge from the graph.
+		\param a_edge The pointer to the edge that is bing removed.
+	*/
 	void remove_edge(edge<T>* a_edge)
 	{
 		a_edge[0]->remove_edge(a_edge);
 		a_edge[1]->remove_edge(a_edge);
 	}
 
-
+	/*!	\brief Calculated a path between two nodes in the graph using Dijkstra algorithm.
+		\param a_start The pointer to the start point that the path is being calculated from.
+		\param a_end The pointer to the end point that the path is being calculated to.
+		\return A reference the locally stored path that was calculated.
+	*/
 	std::vector<node<T>*>& calculate_path_dijkstra(node<T>* a_start, node<T>* a_end)
 	{
+		// Reset all values to default so that they don't interfere.
 		for (auto& a_node : m_nodes)
 		{
 			a_node->reset();
 		}
+
+		// Wipe any previous data in path.
 		m_path.clear();
 
 
@@ -82,6 +104,7 @@ public:
 			return m_path;
 		}
 
+		// Create the lists used to keep track of the nodes when traversing graph.
 		std::list<node<T>*> open_list;
 		std::list<node<T>*> closed_list;
 
@@ -90,10 +113,11 @@ public:
 		node<T>* current_node;
 		while (open_list.size())
 		{
-
+			// Set up the lists.
 			current_node = open_list.front();
 			open_list.pop_front();
 
+			// Add the 
 			closed_list.push_back(current_node);
 
 			for (auto& a_edge : current_node->m_edges)
@@ -104,7 +128,7 @@ public:
 					continue;
 				}
 
-				// Set up when end of the edge is being tested.
+				// Set up what end of the edge is being tested.
 				node<T>* other_node = nullptr;
 				if (a_edge->m_nodes[0] == current_node)
 				{
@@ -165,11 +189,12 @@ public:
 			end_node = end_node->m_previous;
 			m_path.push_back(end_node);
 		}
+		// Return the found path.
 		return m_path;
 	}
 
 	//private:
-	// The previosuly found path.
+	// The previously found path.
 	std::vector<node<T>*> m_path;
 
 	// The nodes that are in the graph.
