@@ -6,6 +6,7 @@
 #include "edge.h"
 #include "node.h"
 #include <list>
+#include "heap.h"
 
 template<typename T>
 class graph
@@ -150,7 +151,7 @@ public:
 				{
 					float current_g_score = current_node->m_g_score + a_edge->m_weight;
 
-					// If the other_nodes is not in the open_list
+					// If the other_nodes is not in the open_heap
 					if (std::find(std::begin(open_list), std::end(open_list), other_node) == open_list.end())
 					{
 						// Set the current_g_score for the other_node.
@@ -158,7 +159,7 @@ public:
 
 						other_node->m_previous = current_node;
 
-						// Add the other_node to the open_list.
+						// Add the other_node to the open_heap.
 						open_list.push_back(other_node);
 					}
 
@@ -174,6 +175,127 @@ public:
 			}
 		}
 
+		// Will get here if there is no more paths to check.
+		node<T>* end_node = a_end;
+		m_path.push_back(end_node);
+
+		// Backtrack the best path.
+		while (end_node != a_start)
+		{
+			// If there is no valid path.
+			if (!end_node)
+			{
+				m_path.clear();
+				return m_path;
+			}
+
+			end_node = end_node->m_previous;
+			m_path.push_back(end_node);
+		}
+		// Return the found path.
+		return m_path;
+	}
+
+	/*!	\brief Calculated a path between two nodes in the graph using Dijkstra algorithm.
+		\param a_start The pointer to the start point that the path is being calculated from.
+		\param a_end The pointer to the end point that the path is being calculated to.
+		\return A reference the locally stored path that was calculated.
+	*/
+	std::vector<node<T>*>& calculate_path_a_star(node<T>* a_start, node<T>* a_end)
+	{
+		// Reset all values to default so that they don't interfere.
+		for (auto& a_node : m_nodes)
+		{
+			a_node->reset();
+		}
+
+		// Wipe any previous data in path.
+		m_path.clear();
+
+
+		// If any of the pointers point to NULL
+		if (!a_start || !a_end)
+		{
+			return m_path;
+		}
+
+		// If the start and the end are the same position.
+		if (a_start == a_end)
+		{
+			m_path.push_back(a_start);
+			return m_path;
+		}
+
+		// Create the lists used to keep track of the nodes when traversing graph.
+		// Open list is the nodes that have yet to be checked.
+		heap<node<T>*> open_heap;
+		// Closed list is nodes that have been checked already.
+		std::list<node<T>*> closed_list;
+
+		// Add the start node to the open list to start path-finding.
+		open_heap.add(a_start);
+
+		node<T>* current_node;
+		while (open_heap.size())
+		{
+			// Set up the lists.
+			current_node = open_heap.pop();
+			//open_heap.pop();
+
+			// Add the current node to the closed list due it being checked now.
+			closed_list.push_back(current_node);
+
+			for (auto& a_edge : current_node->m_edges)
+			{
+				// Skip this edge if it is disabled.
+				if (!a_edge->is_valid)
+				{
+					continue;
+				}
+
+				// Set up what end of the edge is being tested.
+				node<T>* other_node = nullptr;
+				if (a_edge->m_nodes[0] == current_node)
+				{
+					other_node = a_edge->m_nodes[1];
+				}
+				else
+				{
+					other_node = a_edge->m_nodes[0];
+				}
+
+
+				// If the other_node is not in the closed list.
+				//if (closed_list.find(other_node) == closed_list.last())
+
+				//if (std::find(std::begin(closed_list), std::end(closed_list), other_node) == closed_list.end())
+				if (open_heap.find(other_node) == -1)
+				{
+					float current_g_score = current_node->m_g_score + a_edge->m_weight;
+
+					// If the other_nodes is not in the open_heap
+					if (open_heap.find(other_node) == -1)
+					{
+						// Set the current_g_score for the other_node.
+						other_node->m_g_score = current_node->m_g_score + a_edge->m_weight;
+
+						other_node->m_previous = current_node;
+
+						// Add the other_node to the open_heap.
+						open_heap.add(other_node);
+					}
+
+					// If the other_node is in the closed list but the new current_g_score is better then the one set already.
+					else if (current_g_score < other_node->m_g_score)
+					{
+						// Overwrite the current_g_score.
+						other_node->m_g_score = current_g_score;
+						// and overwrite the previous.
+						other_node->m_previous = current_node;
+					}
+				}
+			}
+		}
 
 		// Will get here if there is no more paths to check.
 		node<T>* end_node = a_end;

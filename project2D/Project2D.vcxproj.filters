@@ -35,5 +35,8 @@
     <ClInclude Include="edge.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="heap.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
