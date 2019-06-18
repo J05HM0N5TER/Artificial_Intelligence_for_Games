@@ -141,8 +141,8 @@ void Application2D::update(float deltaTime)
 
 		if (m_selection_queue.size() == 2)
 		{
-			m_graph->calculate_path_dijkstra(m_selection_queue.front(), m_selection_queue.back());
-			//m_graph->calculate_path_a_star(m_selection_queue.front(), m_selection_queue.back());
+			//m_graph->calculate_path_dijkstra(m_selection_queue.front(), m_selection_queue.back());
+			m_graph->calculate_path_a_star(m_selection_queue.front(), m_selection_queue.back());
 		}
 	}
 
@@ -341,26 +341,58 @@ Vector3 Application2D::colour_picker(node<Vector2>* a_node, int a_mox_g_score)
 	Vector3 output(0.0f, 0.0f, 0.0f);
 	if (colour_active)
 	{
-		output.r = (a_node->m_g_score / a_mox_g_score) * 500; //i.e. FF
-		output.g = 0;
-		int stepSize = a_mox_g_score * 5;//how many colors do you want?
-		bool exit_color_picker = false;
-		while (output.g < 255 && !exit_color_picker)
+		//int colour_index = ;
+		//output.r = (a_node->m_g_score / a_mox_g_score) * 500.0f;
+		//int stepSize = a_mox_g_score * 5;//how many colors do you want?
+		//bool exit_color_picker = false;
+
+		output.g = 255;
+
+		for (int i = 0; i < (a_node->m_g_score / a_mox_g_score) * 500; i++)
+		{
+			output.g /= 1.01;
+			//output.r *= 1.01;
+
+			//output.r *= 1.3;
+
+			output.r++;
+
+		
+
+			// Clanp both values to between 0 - 255.
+			output.g = (output.g > 255) ? 255 : ((output.g < 0) ? 0 : output.g);
+			output.r = (output.r > 255) ? 255 : ((output.r < 0) ? 0 : output.r);
+		}
+
+		/*while (output.g < 255 && !exit_color_picker)
 		{
 			output.g += stepSize;
-			if (output.g > 255) { output.g = 255; }
-			exit_color_picker = true;
+			if (output.g > 255)
+			{
+				output.g = 255;
+				break;
+			}
 		}
-		while (output.r > 0 && !exit_color_picker)
+		if (output.g == 255)
 		{
-			output.r -= stepSize;
-			if (output.r < 0) { output.r = 0; }
-			exit_color_picker = true;
-		}
+			while (output.r > 0 && !exit_color_picker)
+			{
+				output.r -= stepSize;
+				if (output.r < 0)
+				{
+					output.r = 0;
+				}
+			}
+		}*/
 
 
-		output.r /= 500;
-		output.g /= 500;
+
+
+
+		// Convert to percentage.
+		output.r /= 255;
+		//output.g = 1 - output.r;
+		output.g /= 255;
 	}
 	else
 	{

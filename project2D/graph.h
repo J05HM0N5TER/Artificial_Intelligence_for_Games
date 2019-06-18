@@ -6,7 +6,7 @@
 #include "edge.h"
 #include "node.h"
 #include <list>
-#include "heap.h"
+#include "a_star_heap.h"
 
 template<typename T>
 class graph
@@ -228,7 +228,7 @@ public:
 
 		// Create the lists used to keep track of the nodes when traversing graph.
 		// Open list is the nodes that have yet to be checked.
-		heap<node<T>*> open_heap;
+		a_star_heap open_heap;
 		// Closed list is nodes that have been checked already.
 		std::list<node<T>*> closed_list;
 
