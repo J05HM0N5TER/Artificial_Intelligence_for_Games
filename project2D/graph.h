@@ -56,9 +56,9 @@ public:
 	void remove_node(node<T>* a_node)
 	{
 
-		while (a_node->m_edges.size() > 0)
+		while (a_node->get_edges().size() > 0)
 		{
-			this->remove_edge(a_node->m_edges.at(0));
+			this->remove_edge(a_node->get_edges().at(0));
 		}
 
 		auto iter = std::find(m_nodes.begin(), m_nodes.end(), a_node);
@@ -124,7 +124,7 @@ public:
 			// Add the current node to the closed list due it being checked now.
 			closed_list.push_back(current_node);
 
-			for (auto& a_edge : current_node->m_edges)
+			for (auto& a_edge : current_node->get_edges())
 			{
 				// Skip this edge if it is disabled.
 				if (!a_edge->is_valid)
@@ -149,27 +149,27 @@ public:
 
 				if (std::find(std::begin(closed_list), std::end(closed_list), other_node) == closed_list.end())
 				{
-					float current_g_score = current_node->m_g_score + a_edge->m_weight;
+					float current_g_score = current_node->get_g_score() + a_edge->m_weight;
 
 					// If the other_nodes is not in the open_heap
 					if (std::find(std::begin(open_list), std::end(open_list), other_node) == open_list.end())
 					{
 						// Set the current_g_score for the other_node.
-						other_node->m_g_score = current_node->m_g_score + a_edge->m_weight;
+						other_node->set_g_score(current_node->get_g_score() + a_edge->m_weight);
 
-						other_node->m_previous = current_node;
+						other_node->set_previous(current_node);
 
 						// Add the other_node to the open_heap.
 						open_list.push_back(other_node);
 					}
 
 					// If the other_node is in the closed list but the new current_g_score is better then the one set already.
-					else if (current_g_score < other_node->m_g_score)
+					else if (current_g_score < other_node->get_g_score())
 					{
 						// Overwrite the current_g_score.
-						other_node->m_g_score = current_g_score;
+						other_node->set_g_score(current_g_score);
 						// and overwrite the previous.
-						other_node->m_previous = current_node;
+						other_node->set_previous(current_node);
 					}
 				}
 			}
@@ -189,7 +189,7 @@ public:
 				return m_path;
 			}
 
-			end_node = end_node->m_previous;
+			end_node = end_node->get_previous();
 			m_path.push_back(end_node);
 		}
 		// Return the found path.
@@ -236,7 +236,7 @@ public:
 		open_heap.add(a_start);
 
 		node<T>* current_node;
-		while (open_heap.size())
+		while (open_heap.size() != 0)
 		{
 			// Set up the lists.
 			current_node = open_heap.pop();
@@ -245,7 +245,7 @@ public:
 			// Add the current node to the closed list due it being checked now.
 			closed_list.push_back(current_node);
 
-			for (auto& a_edge : current_node->m_edges)
+			for (auto& a_edge : current_node->get_edges())
 			{
 				// Skip this edge if it is disabled.
 				if (!a_edge->is_valid)
@@ -271,27 +271,27 @@ public:
 				//if (std::find(std::begin(closed_list), std::end(closed_list), other_node) == closed_list.end())
 				if (open_heap.find(other_node) == -1)
 				{
-					float current_g_score = current_node->m_g_score + a_edge->m_weight;
+					float current_g_score = current_node->get_g_score() + a_edge->m_weight;
 
 					// If the other_nodes is not in the open_heap
 					if (open_heap.find(other_node) == -1)
 					{
 						// Set the current_g_score for the other_node.
-						other_node->m_g_score = current_node->m_g_score + a_edge->m_weight;
+						other_node->set_g_score(current_node->get_g_score() + a_edge->m_weight);
 
-						other_node->m_previous = current_node;
+						other_node->set_previous(current_node);
 
 						// Add the other_node to the open_heap.
 						open_heap.add(other_node);
 					}
 
 					// If the other_node is in the closed list but the new current_g_score is better then the one set already.
-					else if (current_g_score < other_node->m_g_score)
+					else if (current_g_score < other_node->get_g_score())
 					{
 						// Overwrite the current_g_score.
-						other_node->m_g_score = current_g_score;
+						other_node->set_g_score(current_g_score);
 						// and overwrite the previous.
-						other_node->m_previous = current_node;
+						other_node->set_previous(current_node);
 					}
 				}
 			}
@@ -311,12 +311,13 @@ public:
 				return m_path;
 			}
 
-			end_node = end_node->m_previous;
+			end_node = end_node->get_previous();
 			m_path.push_back(end_node);
 		}
 		// Return the found path.
 		return m_path;
 	}
+
 
 	//private:
 	// The previously found path.

@@ -79,8 +79,63 @@ public:
 		return false;
 	}
 
-	//private:
-		// All the the edges connected the node.
+	const float get_g_score() const
+	{
+		return m_g_score;
+	}
+
+	void set_g_score(const float a_g_score)
+	{
+		m_g_score = a_g_score;
+	}
+
+	const float get_f_score() const
+	{
+		return f_score;
+	}
+
+	void set_f_score(const float a_f_score)
+	{
+		m_f_score = a_f_score;
+	}
+
+	const float get_h_score() const
+	{
+		return m_h_score;
+	}
+
+	void set_h_score(const float a_h_score)
+	{
+		m_h_score = a_h_score;
+	}
+
+	const T& get_data() const
+	{
+		return m_data;
+	}
+
+	void set_data(const T& a_data)
+	{
+		m_data = a_data;
+	}
+
+	std::vector<edge<T>*> get_edges() const
+	{
+		return m_edges;
+	}
+
+	node<T>* get_previous() const
+	{
+		return m_previous;
+	}
+
+	void set_previous(node<T>* a_previous)
+	{
+		m_previous = a_previous;
+	}
+	private:
+
+	// All the edges connected the node.
 	std::vector<edge<T>*> m_edges;
 	// The data that is being stored in the node.
 	T m_data;
@@ -89,6 +144,10 @@ public:
 	node<T>* m_previous = nullptr;
 	// G score used in finding the 'cheapest' path.
 	float m_g_score = 0;
+	// The final score which is calculated by adding the node’s "gScore" and "hScore"together.
+	float m_f_score = 0;
+	// Heuristic - guess on how far from the end node.
+	float m_h_score = 0;
 };
 
 #endif // !NODE_H

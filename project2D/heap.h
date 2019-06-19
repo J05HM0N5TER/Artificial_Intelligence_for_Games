@@ -28,7 +28,7 @@ public:
 		++m_count;
 
 		// Rebalance | parent swap - min heap
-		int current_index = m_count;
+		int current_index = int(m_count);
 		int our_parent = get_parent_index_of(current_index);
 
 		while ((m_data[current_index] < m_data[our_parent]) && (current_index > 0))

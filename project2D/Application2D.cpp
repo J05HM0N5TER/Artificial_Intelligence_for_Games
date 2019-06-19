@@ -19,6 +19,7 @@ bool Application2D::startup()
 
 	m_2dRenderer = new aie::Renderer2D();
 
+	// Change to "./consolas.ttf" When deploying (put the font in the same folder as the .exe
 	m_font = new aie::Font("../bin/font/consolas.ttf", 20);
 
 	m_timer = 0;
@@ -127,7 +128,7 @@ void Application2D::update(float deltaTime)
 
 		for (auto& a_node : m_graph->m_nodes)
 		{
-			float distance = (mouse_pos - a_node->m_data).square_magnitude();
+			float distance = (mouse_pos - a_node->get_data()).square_magnitude();
 			if (distance < shortes_distance)
 			{
 				shortes_distance = distance;
@@ -154,7 +155,7 @@ void Application2D::update(float deltaTime)
 
 		for (auto& a_node : m_graph->m_nodes)
 		{
-			float distance = (mouse_pos - a_node->m_data).square_magnitude();
+			float distance = (mouse_pos - a_node->get_data()).square_magnitude();
 			if (distance < shortes_distance)
 			{
 				shortes_distance = distance;
@@ -202,12 +203,12 @@ void Application2D::draw()
 	Vector3 display_colour{};
 
 	// Work out max_g_score for use with the colour picker.
-	size_t max_g_score = 0;
+	float max_g_score = 0;
 	if (colour_active)
 	{
 		for (auto& a_node : m_graph->m_nodes)
 		{
-			max_g_score = (a_node->m_g_score > max_g_score) ? a_node->m_g_score : max_g_score;
+			max_g_score = (a_node->get_g_score() > max_g_score) ? a_node->get_g_score() : max_g_score;
 		}
 	}
 
@@ -217,7 +218,7 @@ void Application2D::draw()
 		// Set colour of edge depending on if it is active.
 		if (a_edge->is_valid)
 		{
-			node<Vector2>* lowest_node = (a_edge->m_nodes[0]->m_g_score < a_edge->m_nodes[1]->m_g_score) ? a_edge->m_nodes[0] : a_edge->m_nodes[0]; // Find the node with the lowest g_score and use that.
+			node<Vector2>* lowest_node = (a_edge->m_nodes[0]->get_g_score() < a_edge->m_nodes[1]->get_g_score()) ? a_edge->m_nodes[0] : a_edge->m_nodes[0]; // Find the node with the lowest g_score and use that.
 			// Get color.
 			// If the node is the start node ...
 			if (m_selection_queue.size() > 1 && lowest_node == m_selection_queue.front())
@@ -248,7 +249,7 @@ void Application2D::draw()
 
 		node<Vector2>* A = a_edge->m_nodes[0];
 		node<Vector2>* B = a_edge->m_nodes[1];
-		m_2dRenderer->drawLine(A->m_data.x, A->m_data.y, B->m_data.x, B->m_data.y, 2.0f);
+		m_2dRenderer->drawLine(A->get_data().x, A->get_data().y, B->get_data().x, B->get_data().y, 2.0f);
 	}
 
 	// Draw the path.
@@ -259,7 +260,7 @@ void Application2D::draw()
 		node<Vector2>* A = m_graph->m_path[i];
 		node<Vector2>* B = m_graph->m_path[i + 1];
 
-		m_2dRenderer->drawLine(A->m_data.x, A->m_data.y, B->m_data.x, B->m_data.y, 5.0f);
+		m_2dRenderer->drawLine(A->get_data().x, A->get_data().y, B->get_data().x, B->get_data().y, 5.0f);
 	}
 
 
@@ -289,7 +290,7 @@ void Application2D::draw()
 			}
 		}
 
-		m_2dRenderer->drawCircle(a_node->m_data.x, a_node->m_data.y, 5.0f);
+		m_2dRenderer->drawCircle(a_node->get_data().x, a_node->get_data().y, 5.0f);
 	}
 
 
@@ -299,47 +300,47 @@ void Application2D::draw()
 
 	if (m_selection_queue.size() > 0)
 	{
-		m_2dRenderer->drawCircle(m_selection_queue.front()->m_data.x, m_selection_queue.front()->m_data.y, 8.0f);
+		m_2dRenderer->drawCircle(m_selection_queue.front()->get_data().x, m_selection_queue.front()->get_data().y, 8.0f);
 	}
 
 	if (m_selection_queue.size() > 1)
 	{
-		m_2dRenderer->drawCircle(m_selection_queue.back()->m_data.x, m_selection_queue.back()->m_data.y, 8.0f);
+		m_2dRenderer->drawCircle(m_selection_queue.back()->get_data().x, m_selection_queue.back()->get_data().y, 8.0f);
 	}
 
-#pragma region "Display instructions."
+#pragma region Display instructions.
 
 	// Reset colour for text.
 	m_2dRenderer->setRenderColour(1.0f, 1.0f, 1.0f, 1.0f);
 
 	// Calculate and draw text.
 	const char escape_text[] = "Press ESC to quit";
-	int escape_text_position = getWindowHeight() - m_font->getStringHeight(escape_text);
+	float escape_text_position = getWindowHeight() - m_font->getStringHeight(escape_text);
 
 	m_2dRenderer->drawText(m_font, escape_text, 0.0f, escape_text_position);
 
 	const char left_mouse_text[] = "Left mouse to select nodes";
-	int left_mouse_text_position = escape_text_position - m_font->getStringHeight(escape_text);
+	float left_mouse_text_position = escape_text_position - m_font->getStringHeight(escape_text);
 
 	m_2dRenderer->drawText(m_font, left_mouse_text, 0.0f, left_mouse_text_position);
 
 	const char shift_text[] = "Press and hold left shift and right mouse to deactivate nodes.";
-	int shift_text_position = left_mouse_text_position - m_font->getStringHeight(left_mouse_text);
+	float shift_text_position = left_mouse_text_position - m_font->getStringHeight(left_mouse_text);
 
 	m_2dRenderer->drawText(m_font, shift_text, 0.0f, shift_text_position);
 
 	const char control_text[] = "Press and hold left control and right mouse to activate nodes.";
-	int control_text_position = shift_text_position - m_font->getStringHeight(shift_text);
+	float control_text_position = shift_text_position - m_font->getStringHeight(shift_text);
 
 	m_2dRenderer->drawText(m_font, control_text, 0.0f, control_text_position);
 
 	const char right_mouse_text[] = "Press right mouse to toggle node.";
-	int right_mouse_text_position = control_text_position - m_font->getStringHeight(control_text);
+	float right_mouse_text_position = control_text_position - m_font->getStringHeight(control_text);
 
 	m_2dRenderer->drawText(m_font, right_mouse_text, 0.0f, right_mouse_text_position);
 
 	const char colour_text[] = "Press 'c' to toggle colour display.";
-	int colour_text_position = right_mouse_text_position - m_font->getStringHeight(right_mouse_text);
+	float colour_text_position = right_mouse_text_position - m_font->getStringHeight(right_mouse_text);
 
 	m_2dRenderer->drawText(m_font, colour_text, 0.0f, colour_text_position);
 
@@ -349,14 +350,14 @@ void Application2D::draw()
 	m_2dRenderer->end();
 }
 
-Vector3 Application2D::colour_picker(node<Vector2>* a_node, int a_mox_g_score)
+Vector3 Application2D::colour_picker(node<Vector2>* a_node, float a_mox_g_score)
 {
 	Vector3 output(0.0f, 0.0f, 0.0f);
 
 	// If the display is set to have color.
 	if (colour_active)
 	{
-		if (a_node->m_g_score < 0.1f)
+		if (a_node->get_g_score() < 0.1f)
 		{
 			output.r = 0.5f;
 			output.g = 0.5f;
@@ -365,7 +366,7 @@ Vector3 Application2D::colour_picker(node<Vector2>* a_node, int a_mox_g_score)
 		else
 		{
 			// Calculate green value off of g score.
-			output.g = 1 - (a_node->m_g_score / (float)a_mox_g_score);
+			output.g = 1 - (a_node->get_g_score() / (float)a_mox_g_score);
 
 			// Calculate red value off of green value.
 			output.r = 1 - output.g;

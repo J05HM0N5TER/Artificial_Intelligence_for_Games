@@ -26,7 +26,7 @@ protected:
 		\param a_max_score The maximum g_score across every node.
 		\return A Vector3 with the values for red, green and blue stored in it.
 	*/
-	Vector3 colour_picker(node<Vector2>* a_node, int a_mox_g_score);
+	Vector3 colour_picker(node<Vector2>* a_node, float a_mox_g_score);
 
 	aie::Renderer2D*	m_2dRenderer;
 	aie::Font*			m_font;

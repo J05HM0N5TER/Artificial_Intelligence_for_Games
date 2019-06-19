@@ -58,12 +58,12 @@ public:
 		m_data[m_item_count] = a_item;
 		++m_item_count;
 	
-		// Rebalance | parent swap - Min heap
+		// Re-balance | parent swap - Min heap
 		int where_we_are = int(m_item_count) - 1;
 		int our_parent = parent_of(where_we_are);
 	
 		while  ((where_we_are > 0) && 
-				(m_data[where_we_are]->m_g_score < m_data[our_parent]->m_g_score))
+				(m_data[where_we_are]->get_g_score() < m_data[our_parent]->get_g_score()))
 		{
 			// Swap and repeat
 			node<Vector2>* swap_buffer = m_data[where_we_are];
@@ -102,7 +102,7 @@ public:
 			{
 				// Identify smallest child
 				smaller_child_index =
-					(m_data[left_child]->m_g_score > m_data[right_child]->m_g_score) ? right_child : left_child;
+					(m_data[left_child]->get_g_score() > m_data[right_child]->get_g_score()) ? right_child : left_child;
 			}
 			else if (left_child > 0)
 			{ 
@@ -114,7 +114,7 @@ public:
 			}
 	
 			// Swap if smaller than where we are
-			if (m_data[where_we_are]->m_g_score > m_data[smaller_child_index]->m_g_score)
+			if (m_data[where_we_are]->get_g_score() > m_data[smaller_child_index]->get_g_score())
 			{ 
 				node<Vector2>* swap_buffer = m_data[where_we_are];
 				m_data[where_we_are] = m_data[smaller_child_index];

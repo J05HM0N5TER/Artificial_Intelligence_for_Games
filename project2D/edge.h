@@ -21,7 +21,7 @@ public:
 		m_nodes[0]->add_edge(this);
 		m_nodes[1]->add_edge(this);
 
-		// Set it to be valid defaultly.
+		// Set it to be valid by default.
 		is_valid = true;
 		m_weight = a_weight;
 	}
