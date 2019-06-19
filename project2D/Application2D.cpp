@@ -19,8 +19,7 @@ bool Application2D::startup()
 
 	m_2dRenderer = new aie::Renderer2D();
 
-
-	m_font = new aie::Font("./font/consolas.ttf", 20);
+	m_font = new aie::Font("../bin/font/consolas.ttf", 20);
 
 	m_timer = 0;
 
@@ -71,14 +70,14 @@ bool Application2D::startup()
 			{
 				m_graph->create_edge(
 					m_graph->m_nodes[i * width + j],
-					m_graph->m_nodes[(i + 1) * width + (j - 1)], 1.42f);
+					m_graph->m_nodes[(i + 1) * width + (j - 1)], 1.414213562f);
 			}
 			// Up to the right '/'.
 			if (j < width - 1 && i < height - 1)
 			{
 				m_graph->create_edge(
 					m_graph->m_nodes[i * width + j],
-					m_graph->m_nodes[(i + 1) * width + (j + 1)], 1.42f);
+					m_graph->m_nodes[(i + 1) * width + (j + 1)], 1.414213562f);
 			}
 		}
 	}
@@ -109,11 +108,13 @@ void Application2D::update(float deltaTime)
 	float shortes_distance = FLT_MAX;
 	node<Vector2>* closest_node;
 
+	// Check if they are only clicking and not holding right click.
 	if (input->wasMouseButtonPressed(aie::INPUT_MOUSE_BUTTON_RIGHT))
 	{
 		was_left_mouse_pressed = true;
 	}
 
+	// Controls to toggle colour mode.
 	if (input->wasKeyPressed(aie::INPUT_KEY_C))
 	{
 		colour_active = !colour_active;
@@ -141,8 +142,8 @@ void Application2D::update(float deltaTime)
 
 		if (m_selection_queue.size() == 2)
 		{
-			//m_graph->calculate_path_dijkstra(m_selection_queue.front(), m_selection_queue.back());
-			m_graph->calculate_path_a_star(m_selection_queue.front(), m_selection_queue.back());
+			m_graph->calculate_path_dijkstra(m_selection_queue.front(), m_selection_queue.back());
+			//m_graph->calculate_path_a_star(m_selection_queue.front(), m_selection_queue.back());
 		}
 	}
 
@@ -175,7 +176,7 @@ void Application2D::update(float deltaTime)
 		}
 	}
 
-
+	// Reset key.
 	if (input->wasKeyPressed(aie::INPUT_KEY_R))
 	{
 		for (auto& a_node : m_graph->m_nodes)
@@ -200,10 +201,14 @@ void Application2D::draw()
 
 	Vector3 display_colour{};
 
+	// Work out max_g_score for use with the colour picker.
 	size_t max_g_score = 0;
-	for (auto& a_node : m_graph->m_nodes)
+	if (colour_active)
 	{
-		max_g_score = a_node->m_g_score > max_g_score ? a_node->m_g_score : max_g_score;
+		for (auto& a_node : m_graph->m_nodes)
+		{
+			max_g_score = (a_node->m_g_score > max_g_score) ? a_node->m_g_score : max_g_score;
+		}
 	}
 
 	// Draw lines edges.
@@ -212,8 +217,16 @@ void Application2D::draw()
 		// Set colour of edge depending on if it is active.
 		if (a_edge->is_valid)
 		{
+			node<Vector2>* lowest_node = (a_edge->m_nodes[0]->m_g_score < a_edge->m_nodes[1]->m_g_score) ? a_edge->m_nodes[0] : a_edge->m_nodes[0]; // Find the node with the lowest g_score and use that.
 			// Get color.
-			display_colour = colour_picker(a_edge->m_nodes[0], max_g_score);
+			// If the node is the start node ...
+			if (m_selection_queue.size() > 1 && lowest_node == m_selection_queue.front())
+			{
+				// .. use the other node to get the colour.
+				lowest_node = (lowest_node == a_edge->m_nodes[0]) ? a_edge->m_nodes[1] : a_edge->m_nodes[0];
+			}
+			// Get the colour using the node of the lowest g_score.
+			display_colour = colour_picker(lowest_node, max_g_score);
 
 			// Display using colour.
 			m_2dRenderer->setRenderColour(display_colour.r, display_colour.g, display_colour.b, 1);
@@ -231,24 +244,22 @@ void Application2D::draw()
 				m_2dRenderer->setRenderColour(0.3f, 0.3f, 0.3f, 1);
 
 			}
-			// Gray if not.
 		}
+
 		node<Vector2>* A = a_edge->m_nodes[0];
 		node<Vector2>* B = a_edge->m_nodes[1];
 		m_2dRenderer->drawLine(A->m_data.x, A->m_data.y, B->m_data.x, B->m_data.y, 2.0f);
-
 	}
 
 	// Draw the path.
+	// Set colour to red.
+	m_2dRenderer->setRenderColour(1.0f, 0.0f, 0.0f, 1);
 	for (int i = 0; i < int(m_graph->m_path.size()) - 1; ++i)
 	{
-		// Set colour to red.
-		m_2dRenderer->setRenderColour(1.0f, 0.0f, 0.0f, 1);
-
 		node<Vector2>* A = m_graph->m_path[i];
 		node<Vector2>* B = m_graph->m_path[i + 1];
-		m_2dRenderer->drawLine(A->m_data.x, A->m_data.y, B->m_data.x, B->m_data.y, 5.0f);
 
+		m_2dRenderer->drawLine(A->m_data.x, A->m_data.y, B->m_data.x, B->m_data.y, 5.0f);
 	}
 
 
@@ -263,7 +274,6 @@ void Application2D::draw()
 
 			// Display using colour.
 			m_2dRenderer->setRenderColour(display_colour.r, display_colour.g, display_colour.b, 1);
-
 		}
 		else
 		{
@@ -277,17 +287,16 @@ void Application2D::draw()
 				m_2dRenderer->setRenderColour(0.3f, 0.3f, 0.3f, 1);
 
 			}
-			// Gray if not.
 		}
 
 		m_2dRenderer->drawCircle(a_node->m_data.x, a_node->m_data.y, 5.0f);
 	}
 
-	// Reset colour.
-	m_2dRenderer->setRenderColour(1.0f, 0.0f, 0.0f, 1);
-
 
 	// Display selected nodes.
+	// Set colour to red.
+	m_2dRenderer->setRenderColour(1.0f, 0.0f, 0.0f, 1);
+
 	if (m_selection_queue.size() > 0)
 	{
 		m_2dRenderer->drawCircle(m_selection_queue.front()->m_data.x, m_selection_queue.front()->m_data.y, 8.0f);
@@ -298,7 +307,11 @@ void Application2D::draw()
 		m_2dRenderer->drawCircle(m_selection_queue.back()->m_data.x, m_selection_queue.back()->m_data.y, 8.0f);
 	}
 
+#pragma region "Display instructions."
+
+	// Reset colour for text.
 	m_2dRenderer->setRenderColour(1.0f, 1.0f, 1.0f, 1.0f);
+
 	// Calculate and draw text.
 	const char escape_text[] = "Press ESC to quit";
 	int escape_text_position = getWindowHeight() - m_font->getStringHeight(escape_text);
@@ -330,7 +343,7 @@ void Application2D::draw()
 
 	m_2dRenderer->drawText(m_font, colour_text, 0.0f, colour_text_position);
 
-
+#pragma endregion
 
 	// done drawing sprites
 	m_2dRenderer->end();
@@ -339,61 +352,26 @@ void Application2D::draw()
 Vector3 Application2D::colour_picker(node<Vector2>* a_node, int a_mox_g_score)
 {
 	Vector3 output(0.0f, 0.0f, 0.0f);
+
+	// If the display is set to have color.
 	if (colour_active)
 	{
-		//int colour_index = ;
-		//output.r = (a_node->m_g_score / a_mox_g_score) * 500.0f;
-		//int stepSize = a_mox_g_score * 5;//how many colors do you want?
-		//bool exit_color_picker = false;
-
-		output.g = 255;
-
-		for (int i = 0; i < (a_node->m_g_score / a_mox_g_score) * 500; i++)
+		if (a_node->m_g_score < 0.1f)
 		{
-			output.g /= 1.01;
-			//output.r *= 1.01;
-
-			//output.r *= 1.3;
-
-			output.r++;
-
-		
-
-			// Clanp both values to between 0 - 255.
-			output.g = (output.g > 255) ? 255 : ((output.g < 0) ? 0 : output.g);
-			output.r = (output.r > 255) ? 255 : ((output.r < 0) ? 0 : output.r);
+			output.r = 0.5f;
+			output.g = 0.5f;
+			output.b = 0.5f;
 		}
-
-		/*while (output.g < 255 && !exit_color_picker)
+		else
 		{
-			output.g += stepSize;
-			if (output.g > 255)
-			{
-				output.g = 255;
-				break;
-			}
+			// Calculate green value off of g score.
+			output.g = 1 - (a_node->m_g_score / (float)a_mox_g_score);
+
+			// Calculate red value off of green value.
+			output.r = 1 - output.g;
 		}
-		if (output.g == 255)
-		{
-			while (output.r > 0 && !exit_color_picker)
-			{
-				output.r -= stepSize;
-				if (output.r < 0)
-				{
-					output.r = 0;
-				}
-			}
-		}*/
-
-
-
-
-
-		// Convert to percentage.
-		output.r /= 255;
-		//output.g = 1 - output.r;
-		output.g /= 255;
 	}
+	// If the display is set to not have colour.
 	else
 	{
 		output.r = 1.0f;
