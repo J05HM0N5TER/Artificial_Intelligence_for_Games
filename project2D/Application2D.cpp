@@ -91,7 +91,6 @@ bool Application2D::startup()
 
 void Application2D::shutdown()
 {
-
 	delete m_font;
 	delete m_2dRenderer;
 	delete m_graph;
@@ -133,6 +132,7 @@ void Application2D::update(float deltaTime)
 	{
 		Vector2 mouse_pos(float(input->getMouseX()), float(input->getMouseY()));
 
+		// Loop though each node and compare distance to find closest node.
 		for (auto& a_node : m_graph->m_nodes)
 		{
 			float distance = (mouse_pos - a_node->get_data()).square_magnitude();
@@ -142,14 +142,20 @@ void Application2D::update(float deltaTime)
 				closest_node = a_node;
 			}
 		}
+		// Add note to the selection queue.
 		m_selection_queue.push(closest_node);
+
+		// If there is already two nodes selected ...
 		if (m_selection_queue.size() > 2)
 		{
+			// ... remove the oldest one
 			m_selection_queue.pop();
 		}
 
+		// If there is two nodes selected ...
 		if (m_selection_queue.size() == 2)
 		{
+			// ... apply correct algorithm to find the path.
 			if (using_dijkstra)
 			{
 				m_graph->calculate_path_dijkstra(m_selection_queue.front(), m_selection_queue.back());
@@ -164,6 +170,7 @@ void Application2D::update(float deltaTime)
 	// Disable node.
 	else if (input->isMouseButtonDown(aie::INPUT_MOUSE_BUTTON_RIGHT))
 	{
+		// Loop though each node and compare distance to find closest node.
 		Vector2 mouse_pos(float(input->getMouseX()), float(input->getMouseY()));
 
 		for (auto& a_node : m_graph->m_nodes)
@@ -176,16 +183,22 @@ void Application2D::update(float deltaTime)
 			}
 		}
 
+		// If the user is holding shift ...
 		if (input->isKeyDown(aie::INPUT_KEY_LEFT_SHIFT))
 		{
+			// ... disable every node they have there mouse close to.
 			closest_node->set_valid(false);
 		}
+		// If the user is holding control ...
 		else if (input->isKeyDown(aie::INPUT_KEY_LEFT_CONTROL))
 		{
+			// ... enable every node they have there mouse close to.
 			closest_node->set_valid(true);
 		}
+		// If the user just clicked ...
 		else if (was_left_mouse_pressed)
 		{
+			// ... toggle the node they are closest to.
 			closest_node->toggle_valid();
 		}
 	}
@@ -193,6 +206,7 @@ void Application2D::update(float deltaTime)
 	// Reset key.
 	if (input->wasKeyPressed(aie::INPUT_KEY_R))
 	{
+		// Reset all nodes.
 		for (auto& a_node : m_graph->m_nodes)
 		{
 			a_node->set_valid(true);
@@ -219,8 +233,10 @@ void Application2D::draw()
 	float max_g_score = 0;
 	if (colour_display)
 	{
+		// Loop though all nodes ...
 		for (auto& a_node : m_graph->m_nodes)
 		{
+			// ... and compare to find the largest g_score.
 			max_g_score = (a_node->get_g_score() > max_g_score) ? a_node->get_g_score() : max_g_score;
 		}
 	}
@@ -347,27 +363,27 @@ void Application2D::draw()
 
 	// Calculate and draw text off of displacement and window height.
 
-	float window_height = getWindowHeight();
+	const float window_height = getWindowHeight();
 
-	float escape_text_position = window_height - escape_text_displacement;
+	const float escape_text_position = window_height - escape_text_displacement;
 	m_2dRenderer->drawText(m_font, escape_text, 0.0f, escape_text_position);
 
-	float left_mouse_text_position = window_height - left_mouse_text_displacement;
+	const float left_mouse_text_position = window_height - left_mouse_text_displacement;
 	m_2dRenderer->drawText(m_font, left_mouse_text, 0.0f, left_mouse_text_position);
 
-	float shift_text_position = window_height - shift_text_displacement;
+	const float shift_text_position = window_height - shift_text_displacement;
 	m_2dRenderer->drawText(m_font, shift_text, 0.0f, shift_text_position);
 
-	float control_text_position = window_height - control_text_displacement;
+	const float control_text_position = window_height - control_text_displacement;
 	m_2dRenderer->drawText(m_font, control_text, 0.0f, control_text_position);
 
-	float right_mouse_text_position = window_height - right_mouse_text_displacement;
+	const float right_mouse_text_position = window_height - right_mouse_text_displacement;
 	m_2dRenderer->drawText(m_font, right_mouse_text, 0.0f, right_mouse_text_position);
 
-	float colour_text_position = window_height - colour_text_displacement;
+	const float colour_text_position = window_height - colour_text_displacement;
 	m_2dRenderer->drawText(m_font, colour_text, 0.0f, colour_text_position);
 
-	float algorithm_text_position = window_height - algorithm_text_displacement;
+	const float algorithm_text_position = window_height - algorithm_text_displacement;
 	m_2dRenderer->drawText(m_font, algorithm_text, 0.0f, algorithm_text_position);
 
 #pragma endregion

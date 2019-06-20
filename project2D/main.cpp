@@ -10,7 +10,7 @@ int main()
 	auto app = new Application2D();
 
 	// initialise and loop
-	app->run("Artificial Intelligence for Games", 1280, 720 + 100, false);
+	app->run("Artificial Intelligence for Games", 1280, 720 + 100/*The added height for the instructions*/, false);
 
 	// deallocation
 	delete app;

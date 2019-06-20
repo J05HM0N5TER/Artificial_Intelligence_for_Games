@@ -37,19 +37,6 @@ public:
 		return new_node;
 	}
 
-	/*!	\brief Creates a new edge to connect two nodes.
-		\param a_node_A The first node that is being connected.
-		\param a_node_B The second node that is being connected.
-		\param a_weight The 'cost' that it takes to traverse the edge in path-finding.
-		\return The pointer to the new edge.
-	*/
-	edge<T>* create_edge(node<T>* a_node_A, node<T>* a_node_B, float a_weight = 1.0f)
-	{
-		edge<T>* new_edge = new edge<T>(a_node_A, a_node_B, a_weight);
-		m_edges.push_back(new_edge);
-		return new_edge;
-	}
-
 	/*!	\brief Removes a specified node from the graph.
 		\param The pointer to the node that is being removed.
 	*/
@@ -64,6 +51,19 @@ public:
 		auto iter = std::find(m_nodes.begin(), m_nodes.end(), a_node);
 		delete (*iter);
 		m_nodes.erase(iter);
+	}
+
+	/*!	\brief Creates a new edge to connect two nodes.
+		\param a_node_A The first node that is being connected.
+		\param a_node_B The second node that is being connected.
+		\param a_weight The 'cost' that it takes to traverse the edge in path-finding.
+		\return The pointer to the new edge.
+	*/
+	edge<T>* create_edge(node<T>* a_node_A, node<T>* a_node_B, float a_weight = 1.0f)
+	{
+		edge<T>* new_edge = new edge<T>(a_node_A, a_node_B, a_weight);
+		m_edges.push_back(new_edge);
+		return new_edge;
 	}
 
 	/*!	\brief Removes a specified edge from the graph.
@@ -273,7 +273,7 @@ public:
 				{
 					// Set up the current scores.
 					float current_g_score = current_node->get_g_score() + a_edge->m_weight;
-					float current_h_score = huristic(other_node, a_end);
+					float current_h_score = heuristic(other_node, a_end);
 					float current_f_score = current_g_score + current_h_score;
 
 					// If the other_nodes is not in the open_heap
@@ -305,8 +305,11 @@ public:
 				}
 
 			}
+
+			// If it found the end node ...
 			if (current_node == a_end)
 			{
+				// ... break out of the loop.
 				break;
 			}
 		}
@@ -332,7 +335,12 @@ public:
 		return m_path;
 	}
 
-	static const float huristic(const node<Vector2>* a_next_node, const node<Vector2>* a_end_node)
+	/*!	\brief Calculates heuristic based off of Manhattan Distance.
+		\param a_next_node The node on the other end of the edge.
+		\param a_end_node The final objective that the path-finding is trying to get to.
+		\return The h_score for a_next_node.
+	*/
+	static const float heuristic(const node<Vector2>* a_next_node, const node<Vector2>* a_end_node)
 	{
 		return fabs(a_next_node->get_data().x - a_end_node->get_data().x) + fabs(a_next_node->get_data().y - a_end_node->get_data().y);
 	}
