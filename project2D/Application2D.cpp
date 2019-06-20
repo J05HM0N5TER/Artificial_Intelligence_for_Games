@@ -83,7 +83,8 @@ bool Application2D::startup()
 		}
 	}
 
-	colour_active = false;
+	colour_display = true;
+	using_dijkstra = true;
 
 	return true;
 }
@@ -118,7 +119,13 @@ void Application2D::update(float deltaTime)
 	// Controls to toggle colour mode.
 	if (input->wasKeyPressed(aie::INPUT_KEY_C))
 	{
-		colour_active = !colour_active;
+		colour_display = !colour_display;
+	}
+
+	// Controls to toggle algorithm.
+	if (input->wasKeyPressed(aie::INPUT_KEY_E))
+	{
+		using_dijkstra = !using_dijkstra;
 	}
 
 	// Select node.
@@ -143,8 +150,14 @@ void Application2D::update(float deltaTime)
 
 		if (m_selection_queue.size() == 2)
 		{
-			m_graph->calculate_path_dijkstra(m_selection_queue.front(), m_selection_queue.back());
-			//m_graph->calculate_path_a_star(m_selection_queue.front(), m_selection_queue.back());
+			if (using_dijkstra)
+			{
+				m_graph->calculate_path_dijkstra(m_selection_queue.front(), m_selection_queue.back());
+			}
+			else
+			{
+				m_graph->calculate_path_a_star(m_selection_queue.front(), m_selection_queue.back());
+			}
 		}
 	}
 
@@ -204,7 +217,7 @@ void Application2D::draw()
 
 	// Work out max_g_score for use with the colour picker.
 	float max_g_score = 0;
-	if (colour_active)
+	if (colour_display)
 	{
 		for (auto& a_node : m_graph->m_nodes)
 		{
@@ -235,7 +248,7 @@ void Application2D::draw()
 		}
 		else
 		{
-			if (colour_active)
+			if (colour_display)
 			{
 				m_2dRenderer->setRenderColour(0.0f, 0.0f, 0.3f, 1);
 
@@ -278,7 +291,7 @@ void Application2D::draw()
 		}
 		else
 		{
-			if (colour_active)
+			if (colour_display)
 			{
 				m_2dRenderer->setRenderColour(0.0f, 0.0f, 0.5f, 1);
 
@@ -310,39 +323,52 @@ void Application2D::draw()
 
 #pragma region Display instructions.
 
+	// Initialize text
+	static const char escape_text[] = "Press ESC to quit";
+	static const char left_mouse_text[] = "Left mouse to select nodes";
+	static const char shift_text[] = "Press and hold left shift and right mouse to deactivate nodes.";
+	static const char control_text[] = "Press and hold left control and right mouse to activate nodes.";
+	static const char right_mouse_text[] = "Press right mouse to toggle node.";
+	static const char colour_text[] = "Press 'c' to toggle colour display.";
+	static const char algorithm_text[] = "Press 'e' to switch algorithm.";
+
+	// Calculate displacement of text off of the screen height to be used later.
+	static const float escape_text_displacement = m_font->getStringHeight(escape_text);
+	static const float left_mouse_text_displacement = escape_text_displacement + m_font->getStringHeight(escape_text);
+	static const float shift_text_displacement = left_mouse_text_displacement + m_font->getStringHeight(left_mouse_text);
+	static const float control_text_displacement = shift_text_displacement + m_font->getStringHeight(shift_text);
+	static const float right_mouse_text_displacement = control_text_displacement + m_font->getStringHeight(control_text);
+	static const float colour_text_displacement = right_mouse_text_displacement + m_font->getStringHeight(right_mouse_text);
+	static const float algorithm_text_displacement = colour_text_displacement + m_font->getStringHeight(algorithm_text);
+
+
 	// Reset colour for text.
 	m_2dRenderer->setRenderColour(1.0f, 1.0f, 1.0f, 1.0f);
 
-	// Calculate and draw text.
-	const char escape_text[] = "Press ESC to quit";
-	float escape_text_position = getWindowHeight() - m_font->getStringHeight(escape_text);
+	// Calculate and draw text off of displacement and window height.
 
+	float window_height = getWindowHeight();
+
+	float escape_text_position = window_height - escape_text_displacement;
 	m_2dRenderer->drawText(m_font, escape_text, 0.0f, escape_text_position);
 
-	const char left_mouse_text[] = "Left mouse to select nodes";
-	float left_mouse_text_position = escape_text_position - m_font->getStringHeight(escape_text);
-
+	float left_mouse_text_position = window_height - left_mouse_text_displacement;
 	m_2dRenderer->drawText(m_font, left_mouse_text, 0.0f, left_mouse_text_position);
 
-	const char shift_text[] = "Press and hold left shift and right mouse to deactivate nodes.";
-	float shift_text_position = left_mouse_text_position - m_font->getStringHeight(left_mouse_text);
-
+	float shift_text_position = window_height - shift_text_displacement;
 	m_2dRenderer->drawText(m_font, shift_text, 0.0f, shift_text_position);
 
-	const char control_text[] = "Press and hold left control and right mouse to activate nodes.";
-	float control_text_position = shift_text_position - m_font->getStringHeight(shift_text);
-
+	float control_text_position = window_height - control_text_displacement;
 	m_2dRenderer->drawText(m_font, control_text, 0.0f, control_text_position);
 
-	const char right_mouse_text[] = "Press right mouse to toggle node.";
-	float right_mouse_text_position = control_text_position - m_font->getStringHeight(control_text);
-
+	float right_mouse_text_position = window_height - right_mouse_text_displacement;
 	m_2dRenderer->drawText(m_font, right_mouse_text, 0.0f, right_mouse_text_position);
 
-	const char colour_text[] = "Press 'c' to toggle colour display.";
-	float colour_text_position = right_mouse_text_position - m_font->getStringHeight(right_mouse_text);
-
+	float colour_text_position = window_height - colour_text_displacement;
 	m_2dRenderer->drawText(m_font, colour_text, 0.0f, colour_text_position);
+
+	float algorithm_text_position = window_height - algorithm_text_displacement;
+	m_2dRenderer->drawText(m_font, algorithm_text, 0.0f, algorithm_text_position);
 
 #pragma endregion
 
@@ -355,7 +381,7 @@ Vector3 Application2D::colour_picker(node<Vector2>* a_node, float a_mox_g_score)
 	Vector3 output(0.0f, 0.0f, 0.0f);
 
 	// If the display is set to have color.
-	if (colour_active)
+	if (colour_display)
 	{
 		if (a_node->get_g_score() < 0.1f)
 		{

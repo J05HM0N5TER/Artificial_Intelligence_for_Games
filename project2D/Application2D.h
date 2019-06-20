@@ -35,7 +35,10 @@ protected:
 	std::queue<node<Vector2>*> m_selection_queue;
 
 	// True if the user has selected to display in colour.
-	bool colour_active;
+	bool colour_display;
+
+	// The selector on what algorithm that the path-finding is using.
+	bool using_dijkstra;
 
 	// The graph that holds all the nodes and edges.
 	graph<Vector2>* m_graph;

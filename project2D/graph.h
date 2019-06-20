@@ -196,12 +196,12 @@ public:
 		return m_path;
 	}
 
-	/*!	\brief Calculated a path between two nodes in the graph using Dijkstra algorithm.
+	/*!	\brief Calculated a path between two nodes in the graph using A* algorithm.
 		\param a_start The pointer to the start point that the path is being calculated from.
 		\param a_end The pointer to the end point that the path is being calculated to.
 		\return A reference the locally stored path that was calculated.
 	*/
-	std::vector<node<T>*>& calculate_path_a_star(node<T>* a_start, node<T>* a_end)
+	std::vector<node<Vector2>*>& calculate_path_a_star(node<Vector2>* a_start, node<Vector2>* a_end)
 	{
 		// Reset all values to default so that they don't interfere.
 		for (auto& a_node : m_nodes)
@@ -254,7 +254,7 @@ public:
 				}
 
 				// Set up what end of the edge is being tested.
-				node<T>* other_node = nullptr;
+				node<Vector2>* other_node = nullptr;
 				if (a_edge->m_nodes[0] == current_node)
 				{
 					other_node = a_edge->m_nodes[1];
@@ -269,15 +269,20 @@ public:
 				//if (closed_list.find(other_node) == closed_list.last())
 
 				//if (std::find(std::begin(closed_list), std::end(closed_list), other_node) == closed_list.end())
-				if (open_heap.find(other_node) == -1)
+				if (std::find(std::begin(closed_list), std::end(closed_list), other_node) == closed_list.end())
 				{
+					// Set up the current scores.
 					float current_g_score = current_node->get_g_score() + a_edge->m_weight;
+					float current_h_score = huristic(other_node, a_end);
+					float current_f_score = current_g_score + current_h_score;
 
 					// If the other_nodes is not in the open_heap
 					if (open_heap.find(other_node) == -1)
 					{
 						// Set the current_g_score for the other_node.
 						other_node->set_g_score(current_node->get_g_score() + a_edge->m_weight);
+
+						other_node->set_f_score(current_f_score);
 
 						other_node->set_previous(current_node);
 
@@ -286,19 +291,28 @@ public:
 					}
 
 					// If the other_node is in the closed list but the new current_g_score is better then the one set already.
-					else if (current_g_score < other_node->get_g_score())
+					else if (current_f_score < other_node->get_f_score())
 					{
 						// Overwrite the current_g_score.
 						other_node->set_g_score(current_g_score);
+
+						// Overwrite the current_f_score.
+						other_node->set_f_score(current_f_score);
+
 						// and overwrite the previous.
 						other_node->set_previous(current_node);
 					}
 				}
+
+			}
+			if (current_node == a_end)
+			{
+				break;
 			}
 		}
 
 		// Will get here if there is no more paths to check.
-		node<T>* end_node = a_end;
+		node<Vector2>* end_node = a_end;
 		m_path.push_back(end_node);
 
 		// Backtrack the best path.
@@ -318,6 +332,10 @@ public:
 		return m_path;
 	}
 
+	static const float huristic(const node<Vector2>* a_next_node, const node<Vector2>* a_end_node)
+	{
+		return fabs(a_next_node->get_data().x - a_end_node->get_data().x) + fabs(a_next_node->get_data().y - a_end_node->get_data().y);
+	}
 
 	//private:
 	// The previously found path.

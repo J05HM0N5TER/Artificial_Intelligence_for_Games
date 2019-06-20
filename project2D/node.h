@@ -37,7 +37,9 @@ public:
 	void reset()
 	{
 		m_previous = nullptr;
-		m_g_score = 0;
+		m_g_score = 0.0f;
+		m_h_score = 0.0f;
+		m_f_score = 0.0f;
 	}
 
 	/*!	\brief Set all the edges connected to a node to a curtain state (valid or invalid).
@@ -91,7 +93,7 @@ public:
 
 	const float get_f_score() const
 	{
-		return f_score;
+		return m_f_score;
 	}
 
 	void set_f_score(const float a_f_score)
@@ -119,9 +121,14 @@ public:
 		m_data = a_data;
 	}
 
-	std::vector<edge<T>*> get_edges() const
+	const std::vector<edge<T>*>& get_edges() const
 	{
 		return m_edges;
+	}
+
+	void set_edges(const std::vector<edge<T>*>& a_edges)
+	{
+		m_edges = a_edges;
 	}
 
 	node<T>* get_previous() const

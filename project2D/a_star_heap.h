@@ -49,9 +49,6 @@ public:
 		return -1;
 	}
 
-
-//private:
-
 	void add(node<Vector2>* a_item)
 	{
 		// Add at first available index
@@ -63,7 +60,7 @@ public:
 		int our_parent = parent_of(where_we_are);
 	
 		while  ((where_we_are > 0) && 
-				(m_data[where_we_are]->get_g_score() < m_data[our_parent]->get_g_score()))
+				(m_data[where_we_are]->get_f_score() < m_data[our_parent]->get_f_score()))
 		{
 			// Swap and repeat
 			node<Vector2>* swap_buffer = m_data[where_we_are];
