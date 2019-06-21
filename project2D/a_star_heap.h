@@ -162,5 +162,4 @@ public:
 	}
 };
 
-
 #endif // !A_STAR_HEAP_H_

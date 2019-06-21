@@ -39,7 +39,7 @@ public:
 		m_previous = nullptr;
 		m_g_score = 0.0f;
 		m_h_score = 0.0f;
-		m_f_score = 0.0f;
+		/*m_f_score = 0.0f;*/
 	}
 
 	/*!	\brief Set all the edges connected to a node to a curtain state (valid or invalid).
@@ -91,14 +91,10 @@ public:
 		m_g_score = a_g_score;
 	}
 
+	// \brief Calculates and returns the f_score.
 	const float get_f_score() const
 	{
-		return m_f_score;
-	}
-
-	void set_f_score(const float a_f_score)
-	{
-		m_f_score = a_f_score;
+		return m_h_score + m_g_score;
 	}
 
 	const float get_h_score() const
@@ -140,19 +136,24 @@ public:
 	{
 		m_previous = a_previous;
 	}
+
 	private:
 
 	// All the edges connected the node.
 	std::vector<edge<T>*> m_edges;
+
 	// The data that is being stored in the node.
 	T m_data;
 
 	// The previous node that was used to get to this node in path-finding.
 	node<T>* m_previous = nullptr;
+
 	// G score used in finding the 'cheapest' path.
 	float m_g_score = 0;
+
 	// The final score which is calculated by adding the node’s "gScore" and "hScore"together.
-	float m_f_score = 0;
+	/*float m_f_score = 0;*/
+
 	// Heuristic - guess on how far from the end node.
 	float m_h_score = 0;
 };

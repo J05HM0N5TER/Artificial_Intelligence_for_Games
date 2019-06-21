@@ -229,15 +229,15 @@ void Application2D::draw()
 
 	Vector3 display_colour{};
 
-	// Work out max_g_score for use with the colour picker.
-	float max_g_score = 0;
+	// Work out max_f_score for use with the colour picker.
+	float max_f_score = 0;
 	if (colour_display)
 	{
 		// Loop though all nodes ...
 		for (auto& a_node : m_graph->m_nodes)
 		{
 			// ... and compare to find the largest g_score.
-			max_g_score = (a_node->get_g_score() > max_g_score) ? a_node->get_g_score() : max_g_score;
+			max_f_score = (a_node->get_f_score() > max_f_score) ? a_node->get_f_score() : max_f_score;
 		}
 	}
 
@@ -248,7 +248,7 @@ void Application2D::draw()
 		if (a_edge->is_valid)
 		{
 			node<Vector2>* lowest_node = (a_edge->m_nodes[0]->get_g_score() < a_edge->m_nodes[1]->get_g_score()) ? a_edge->m_nodes[0] : a_edge->m_nodes[0]; // Find the node with the lowest g_score and use that.
-			// Get color.
+			// Get colour.
 			// If the node is the start node ...
 			if (m_selection_queue.size() > 1 && lowest_node == m_selection_queue.front())
 			{
@@ -256,7 +256,7 @@ void Application2D::draw()
 				lowest_node = (lowest_node == a_edge->m_nodes[0]) ? a_edge->m_nodes[1] : a_edge->m_nodes[0];
 			}
 			// Get the colour using the node of the lowest g_score.
-			display_colour = colour_picker(lowest_node, max_g_score);
+			display_colour = colour_picker(lowest_node, max_f_score);
 
 			// Display using colour.
 			m_2dRenderer->setRenderColour(display_colour.r, display_colour.g, display_colour.b, 1);
@@ -278,7 +278,7 @@ void Application2D::draw()
 
 		node<Vector2>* A = a_edge->m_nodes[0];
 		node<Vector2>* B = a_edge->m_nodes[1];
-		m_2dRenderer->drawLine(A->get_data().x, A->get_data().y, B->get_data().x, B->get_data().y, 2.0f);
+		m_2dRenderer->drawLine(A->get_data().x, A->get_data().y, B->get_data().x, B->get_data().y, 2.0f/*Line width*/);
 	}
 
 	// Draw the path.
@@ -289,7 +289,7 @@ void Application2D::draw()
 		node<Vector2>* A = m_graph->m_path[i];
 		node<Vector2>* B = m_graph->m_path[i + 1];
 
-		m_2dRenderer->drawLine(A->get_data().x, A->get_data().y, B->get_data().x, B->get_data().y, 5.0f);
+		m_2dRenderer->drawLine(A->get_data().x, A->get_data().y, B->get_data().x, B->get_data().y, 5.0f/*Line width*/);
 	}
 
 
@@ -299,8 +299,8 @@ void Application2D::draw()
 		// Set colour of node depending on if it has any active edges connected to it.
 		if (a_node->is_valid())
 		{
-			// Get color.
-			display_colour = colour_picker(a_node, max_g_score);
+			// Get colour.
+			display_colour = colour_picker(a_node, max_f_score);
 
 			// Display using colour.
 			m_2dRenderer->setRenderColour(display_colour.r, display_colour.g, display_colour.b, 1);
@@ -319,7 +319,7 @@ void Application2D::draw()
 			}
 		}
 
-		m_2dRenderer->drawCircle(a_node->get_data().x, a_node->get_data().y, 5.0f);
+		m_2dRenderer->drawCircle(a_node->get_data().x, a_node->get_data().y, 5.0f/*Circle diameter*/);
 	}
 
 
@@ -329,33 +329,46 @@ void Application2D::draw()
 
 	if (m_selection_queue.size() > 0)
 	{
-		m_2dRenderer->drawCircle(m_selection_queue.front()->get_data().x, m_selection_queue.front()->get_data().y, 8.0f);
+		m_2dRenderer->drawCircle(m_selection_queue.front()->get_data().x, m_selection_queue.front()->get_data().y, 8.0f/*Circle diameter*/);
 	}
 
 	if (m_selection_queue.size() > 1)
 	{
-		m_2dRenderer->drawCircle(m_selection_queue.back()->get_data().x, m_selection_queue.back()->get_data().y, 8.0f);
+		m_2dRenderer->drawCircle(m_selection_queue.back()->get_data().x, m_selection_queue.back()->get_data().y, 8.0f/*Circle diameter*/);
 	}
 
 #pragma region Display instructions.
 
-	// Initialize text
-	static const char escape_text[] = "Press ESC to quit";
+	// Initialise text (only done once)
+	static const char escape_text[] = "Press [ESC] to quit";
 	static const char left_mouse_text[] = "Left mouse to select nodes";
 	static const char shift_text[] = "Press and hold left shift and right mouse to deactivate nodes.";
 	static const char control_text[] = "Press and hold left control and right mouse to activate nodes.";
 	static const char right_mouse_text[] = "Press right mouse to toggle node.";
-	static const char colour_text[] = "Press 'c' to toggle colour display.";
-	static const char algorithm_text[] = "Press 'e' to switch algorithm.";
+	static const char colour_text[] = "Press [C] to toggle colour display.";
+	static const char algorithm_text[] = "Press [E] to switch algorithm.";
 
-	// Calculate displacement of text off of the screen height to be used later.
-	static const float escape_text_displacement = m_font->getStringHeight(escape_text);
-	static const float left_mouse_text_displacement = escape_text_displacement + m_font->getStringHeight(escape_text);
-	static const float shift_text_displacement = left_mouse_text_displacement + m_font->getStringHeight(left_mouse_text);
-	static const float control_text_displacement = shift_text_displacement + m_font->getStringHeight(shift_text);
-	static const float right_mouse_text_displacement = control_text_displacement + m_font->getStringHeight(control_text);
-	static const float colour_text_displacement = right_mouse_text_displacement + m_font->getStringHeight(right_mouse_text);
-	static const float algorithm_text_displacement = colour_text_displacement + m_font->getStringHeight(algorithm_text);
+	// Calculate displacement of text off of the screen height to be used later (only done once).
+	static float escape_text_displacement;
+	static float left_mouse_text_displacement;
+	static float shift_text_displacement;
+	static float control_text_displacement;
+	static float right_mouse_text_displacement;
+	static float colour_text_displacement;
+	static float algorithm_text_displacement;
+
+	static bool initialised = false;
+	if (!initialised)
+	{
+		escape_text_displacement = m_font->getStringHeight(escape_text);
+		left_mouse_text_displacement = escape_text_displacement + m_font->getStringHeight(escape_text);
+		shift_text_displacement = left_mouse_text_displacement + m_font->getStringHeight(left_mouse_text);
+		control_text_displacement = shift_text_displacement + m_font->getStringHeight(shift_text);
+		right_mouse_text_displacement = control_text_displacement + m_font->getStringHeight(control_text);
+		colour_text_displacement = right_mouse_text_displacement + m_font->getStringHeight(right_mouse_text);
+		algorithm_text_displacement = colour_text_displacement + m_font->getStringHeight(algorithm_text);
+		initialised = true;
+	}
 
 
 	// Reset colour for text.
@@ -363,7 +376,7 @@ void Application2D::draw()
 
 	// Calculate and draw text off of displacement and window height.
 
-	const float window_height = getWindowHeight();
+	const float window_height = float(getWindowHeight());
 
 	const float escape_text_position = window_height - escape_text_displacement;
 	m_2dRenderer->drawText(m_font, escape_text, 0.0f, escape_text_position);
@@ -392,11 +405,11 @@ void Application2D::draw()
 	m_2dRenderer->end();
 }
 
-Vector3 Application2D::colour_picker(node<Vector2>* a_node, float a_mox_g_score)
+Vector3 Application2D::colour_picker(node<Vector2>* a_node, float a_mox_f_score)
 {
 	Vector3 output(0.0f, 0.0f, 0.0f);
 
-	// If the display is set to have color.
+	// If the display is set to have colour.
 	if (colour_display)
 	{
 		if (a_node->get_g_score() < 0.1f)
@@ -408,7 +421,7 @@ Vector3 Application2D::colour_picker(node<Vector2>* a_node, float a_mox_g_score)
 		else
 		{
 			// Calculate green value off of g score.
-			output.g = 1 - (a_node->get_g_score() / (float)a_mox_g_score);
+			output.g = 1 - (a_node->get_f_score() / (float)a_mox_f_score);
 
 			// Calculate red value off of green value.
 			output.r = 1 - output.g;

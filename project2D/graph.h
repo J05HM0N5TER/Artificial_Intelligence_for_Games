@@ -27,7 +27,7 @@ public:
 	}
 
 	/*!	\brief Creates a new node
-		\param a_data The data that is being stored int the node.
+		\param a_data The data that is being stored in the node.
 		\return The pointer to the new node.
 	*/
 	node<T>* create_node(const T& a_data)
@@ -67,7 +67,7 @@ public:
 	}
 
 	/*!	\brief Removes a specified edge from the graph.
-		\param a_edge The pointer to the edge that is bing removed.
+		\param a_edge The pointer to the edge that is being removed.
 	*/
 	void remove_edge(edge<T>* a_edge)
 	{
@@ -268,7 +268,6 @@ public:
 				// If the other_node is not in the closed list.
 				//if (closed_list.find(other_node) == closed_list.last())
 
-				//if (std::find(std::begin(closed_list), std::end(closed_list), other_node) == closed_list.end())
 				if (std::find(std::begin(closed_list), std::end(closed_list), other_node) == closed_list.end())
 				{
 					// Set up the current scores.
@@ -282,7 +281,8 @@ public:
 						// Set the current_g_score for the other_node.
 						other_node->set_g_score(current_node->get_g_score() + a_edge->m_weight);
 
-						other_node->set_f_score(current_f_score);
+						/*other_node->set_f_score(current_f_score);*/
+						other_node->set_h_score(current_h_score);
 
 						other_node->set_previous(current_node);
 
@@ -297,7 +297,8 @@ public:
 						other_node->set_g_score(current_g_score);
 
 						// Overwrite the current_f_score.
-						other_node->set_f_score(current_f_score);
+						/*other_node->set_f_score(current_f_score);*/
+						other_node->set_h_score(current_h_score);
 
 						// and overwrite the previous.
 						other_node->set_previous(current_node);
