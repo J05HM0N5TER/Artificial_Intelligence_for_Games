@@ -122,7 +122,7 @@ void Application2D::update(float deltaTime)
 	}
 
 	// Controls to toggle algorithm.
-	if (input->wasKeyPressed(aie::INPUT_KEY_E))
+	if (input->wasKeyPressed(aie::INPUT_KEY_A))
 	{
 		using_dijkstra = !using_dijkstra;
 	}
@@ -281,16 +281,6 @@ void Application2D::draw()
 		m_2dRenderer->drawLine(A->get_data().x, A->get_data().y, B->get_data().x, B->get_data().y, 2.0f/*Line width*/);
 	}
 
-	// Draw the path.
-	// Set colour to red.
-	m_2dRenderer->setRenderColour(1.0f, 0.0f, 0.0f, 1);
-	for (int i = 0; i < int(m_graph->m_path.size()) - 1; ++i)
-	{
-		node<Vector2>* A = m_graph->m_path[i];
-		node<Vector2>* B = m_graph->m_path[i + 1];
-
-		m_2dRenderer->drawLine(A->get_data().x, A->get_data().y, B->get_data().x, B->get_data().y, 5.0f/*Line width*/);
-	}
 
 
 	// Draw nodes.
@@ -322,11 +312,18 @@ void Application2D::draw()
 		m_2dRenderer->drawCircle(a_node->get_data().x, a_node->get_data().y, 5.0f/*Circle diameter*/);
 	}
 
+	// Draw the path.
+	// Set colour to red.
+	m_2dRenderer->setRenderColour(0.0f, 0.0f, 1.0f, 1);
+	for (int i = 0; i < int(m_graph->m_path.size()) - 1; ++i)
+	{
+		node<Vector2>* A = m_graph->m_path[i];
+		node<Vector2>* B = m_graph->m_path[i + 1];
+
+		m_2dRenderer->drawLine(A->get_data().x, A->get_data().y, B->get_data().x, B->get_data().y, 5.0f/*Line width*/);
+	}
 
 	// Display selected nodes.
-	// Set colour to red.
-	m_2dRenderer->setRenderColour(1.0f, 0.0f, 0.0f, 1);
-
 	if (m_selection_queue.size() > 0)
 	{
 		m_2dRenderer->drawCircle(m_selection_queue.front()->get_data().x, m_selection_queue.front()->get_data().y, 8.0f/*Circle diameter*/);
@@ -346,7 +343,7 @@ void Application2D::draw()
 	static const char control_text[] = "Press and hold left control and right mouse to activate nodes.";
 	static const char right_mouse_text[] = "Press right mouse to toggle node.";
 	static const char colour_text[] = "Press [C] to toggle colour display.";
-	static const char algorithm_text[] = "Press [E] to switch algorithm.";
+	static const char algorithm_text[] = "Press [A] to switch algorithm.";
 
 	// Calculate displacement of text off of the screen height to be used later (only done once).
 	static float escape_text_displacement;

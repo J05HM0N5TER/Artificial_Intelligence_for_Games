@@ -3,7 +3,6 @@
 
 #include <tuple>
 
-
 #include "node.h"
 #include "Vector2.h"
 
@@ -81,7 +80,7 @@ public:
 		// Last becomes first
 		m_data[0] = m_data[m_item_count - 1];
 	
-		// Swapsies down the tree
+		// Swap down the tree
 		int where_we_are = 0;
 		int left_child = 0;
 		int right_child = 0;

@@ -291,7 +291,7 @@ public:
 					}
 
 					// If the other_node is in the closed list but the new current_g_score is better then the one set already.
-					else if (current_f_score < other_node->get_f_score())
+					else if (current_g_score < other_node->get_g_score())
 					{
 						// Overwrite the current_g_score.
 						other_node->set_g_score(current_g_score);
