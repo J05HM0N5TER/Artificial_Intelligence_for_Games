@@ -11,7 +11,8 @@ template<typename T>
 class edge
 {
 public:
-	edge(node<T>* a_node_A, node<T>* a_node_B, float a_weight = 1.0f)
+	edge(node<T>* a_node_A, node<T>* a_node_B, float a_weight = 1.0f) : 
+		m_weight(a_weight), is_valid(true)
 	{
 		// Set the nodes.
 		m_nodes[0] = a_node_A;
@@ -20,10 +21,6 @@ public:
 		// Tell the nodes that they are connected to this edge.
 		m_nodes[0]->add_edge(this);
 		m_nodes[1]->add_edge(this);
-
-		// Set it to be valid by default.
-		is_valid = true;
-		m_weight = a_weight;
 	}
 
 	~edge() {};

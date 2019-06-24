@@ -46,7 +46,7 @@ bool Application2D::startup()
 		{
 			m_graph->create_edge(
 				m_graph->m_nodes[i * width + j],
-				m_graph->m_nodes[i * width + (j + 1)]);
+				m_graph->m_nodes[i * width + (j + 1)], spacing);
 		}
 	}
 
@@ -57,7 +57,7 @@ bool Application2D::startup()
 		{
 			m_graph->create_edge(
 				m_graph->m_nodes[i * width + j],
-				m_graph->m_nodes[(i + 1) * width + j]);
+				m_graph->m_nodes[(i + 1) * width + j], spacing);
 		}
 	}
 
@@ -71,14 +71,14 @@ bool Application2D::startup()
 			{
 				m_graph->create_edge(
 					m_graph->m_nodes[i * width + j],
-					m_graph->m_nodes[(i + 1) * width + (j - 1)], 1.414213562f);
+					m_graph->m_nodes[(i + 1) * width + (j - 1)], spacing * 1.414213562f);
 			}
 			// Up to the right '/'.
 			if (j < width - 1 && i < height - 1)
 			{
 				m_graph->create_edge(
 					m_graph->m_nodes[i * width + j],
-					m_graph->m_nodes[(i + 1) * width + (j + 1)], 1.414213562f);
+					m_graph->m_nodes[(i + 1) * width + (j + 1)],spacing *  1.414213562f);
 			}
 		}
 	}
@@ -227,6 +227,7 @@ void Application2D::draw()
 	// begin drawing sprites
 	m_2dRenderer->begin();
 
+	// Vector to store the colour that the node/edge is going to be displayed in.
 	Vector3 display_colour{};
 
 	// Work out max_f_score for use with the colour picker.
@@ -344,6 +345,7 @@ void Application2D::draw()
 	static const char right_mouse_text[] = "Press right mouse to toggle node.";
 	static const char colour_text[] = "Press [C] to toggle colour display.";
 	static const char algorithm_text[] = "Press [A] to switch algorithm.";
+	static const char reset_text[] = "Press [R] to reset graph.";
 
 	// Calculate displacement of text off of the screen height to be used later (only done once).
 	static float escape_text_displacement;
@@ -353,6 +355,7 @@ void Application2D::draw()
 	static float right_mouse_text_displacement;
 	static float colour_text_displacement;
 	static float algorithm_text_displacement;
+	static float reset_text_displacement;
 
 	static bool initialised = false;
 	if (!initialised)
@@ -364,6 +367,7 @@ void Application2D::draw()
 		right_mouse_text_displacement = control_text_displacement + m_font->getStringHeight(control_text);
 		colour_text_displacement = right_mouse_text_displacement + m_font->getStringHeight(right_mouse_text);
 		algorithm_text_displacement = colour_text_displacement + m_font->getStringHeight(algorithm_text);
+		reset_text_displacement = algorithm_text_displacement + m_font->getStringHeight(reset_text);
 		initialised = true;
 	}
 
@@ -395,6 +399,9 @@ void Application2D::draw()
 
 	const float algorithm_text_position = window_height - algorithm_text_displacement;
 	m_2dRenderer->drawText(m_font, algorithm_text, 0.0f, algorithm_text_position);
+
+	const float reset_text_position = window_height - reset_text_displacement;
+	m_2dRenderer->drawText(m_font, reset_text, 0.0f, reset_text_position);
 
 #pragma endregion
 

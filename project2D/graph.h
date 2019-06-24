@@ -7,6 +7,7 @@
 #include "node.h"
 #include <list>
 #include "a_star_heap.h"
+#include <iostream>
 
 template<typename T>
 class graph
@@ -226,6 +227,8 @@ public:
 			return m_path;
 		}
 
+		bool end_found = false;
+
 		// Create the lists used to keep track of the nodes when traversing graph.
 		// Open list is the nodes that have yet to be checked.
 		a_star_heap open_heap;
@@ -235,12 +238,21 @@ public:
 		// Add the start node to the open list to start path-finding.
 		open_heap.add(a_start);
 
+		static int worse_f_score = 0;
+		worse_f_score = 0;
+
 		node<T>* current_node;
 		while (open_heap.size() != 0)
 		{
 			// Set up the lists.
 			current_node = open_heap.pop();
 			//open_heap.pop();
+
+			// Quit the loop early if the end node is found.
+			if (current_node == a_end)
+			{
+				break;
+			}
 
 			// Add the current node to the closed list due it being checked now.
 			closed_list.push_back(current_node);
@@ -266,8 +278,6 @@ public:
 
 
 				// If the other_node is not in the closed list.
-				//if (closed_list.find(other_node) == closed_list.last())
-
 				if (std::find(std::begin(closed_list), std::end(closed_list), other_node) == closed_list.end())
 				{
 					// Set up the current scores.
@@ -276,10 +286,10 @@ public:
 					float current_f_score = current_g_score + current_h_score;
 
 					// If the other_nodes is not in the open_heap
-					if (open_heap.find(other_node) == -1)
+					if (open_heap.find(other_node) == -1 && !end_found)
 					{
 						// Set the current_g_score for the other_node.
-						other_node->set_g_score(current_node->get_g_score() + a_edge->m_weight);
+						other_node->set_g_score(current_g_score);
 
 						/*other_node->set_f_score(current_f_score);*/
 						other_node->set_h_score(current_h_score);
@@ -291,7 +301,7 @@ public:
 					}
 
 					// If the other_node is in the closed list but the new current_g_score is better then the one set already.
-					else if (current_g_score < other_node->get_g_score())
+					else if (current_f_score < other_node->get_f_score())
 					{
 						// Overwrite the current_g_score.
 						other_node->set_g_score(current_g_score);
@@ -305,13 +315,6 @@ public:
 					}
 				}
 
-			}
-
-			// If it found the end node ...
-			if (current_node == a_end)
-			{
-				// ... break out of the loop.
-				break;
 			}
 		}
 
@@ -343,7 +346,13 @@ public:
 	*/
 	static const float heuristic(const node<Vector2>* a_next_node, const node<Vector2>* a_end_node)
 	{
-		return fabs(a_next_node->get_data().x - a_end_node->get_data().x) + fabs(a_next_node->get_data().y - a_end_node->get_data().y);
+		/*return fabs(a_next_node->get_data().x - a_end_node->get_data().x) + fabs(a_next_node->get_data().y - a_end_node->get_data().y);*/
+		float dx = fabs(a_next_node->get_data().x - a_end_node->get_data().x);
+		float dy = fabs(a_next_node->get_data().y - a_end_node->get_data().y);
+		if (dx > dy)       
+			return (1.414213562f * dy) + 1 * (dx - dy);
+		else       
+			return (1.414213562f * dx) + 1 * (dy - dx);
 	}
 
 	//private:
@@ -352,6 +361,7 @@ public:
 
 	// The nodes that are in the graph.
 	std::vector<node<T>*> m_nodes;
+
 	// The edges that are in the graph.
 	std::vector<edge<T>*> m_edges;
 };

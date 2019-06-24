@@ -23,11 +23,11 @@ public:
 
 	void add(const T& a_item)
 	{
-		// Add at firest avilable index.
+		// Add at first available index.
 		m_data[m_count] = a_item;
 		++m_count;
 
-		// Rebalance | parent swap - min heap
+		// Rebalance | parent swap - Min heap
 		int current_index = int(m_count);
 		int our_parent = get_parent_index_of(current_index);
 
@@ -122,7 +122,7 @@ public:
 		return (a_index > 0) ? (a_index - 1) / 2 : -1;
 	}
 
-	/*!	\brief Get the childrens index.
+	/*!	\brief Get the children’s index.
 		\param a_index The index of the element that you are getting
 			the children of.
 		\param a_left_out The reference of the location that it is writing the
@@ -137,7 +137,7 @@ public:
 		a_right_out = get_right_child_index_of(a_index);
 	}
 
-	/*!	\brief Get the childrens index.
+	/*!	\brief Get the children’s index.
 		\param a_index The index of the element that you are getting
 			the children of.
 		\return A tuple with [ left_child, right_child ].
@@ -149,7 +149,7 @@ public:
 			get_right_child_index_of(a_index));
 	}
 
-	/*!	\brief Get the left childs index.
+	/*!	\brief Get the left child’s index.
 		\param a_index The index of the element that you are getting
 			the left child of.
 		\return The left child
@@ -161,7 +161,7 @@ public:
 		return  (left_child_index <= m_count) ? left_child_index : -1;
 	}
 
-	/*!	\brief Get the right childs index.
+	/*!	\brief Get the right child’s index.
 		\param a_index The index of the element that you are getting
 			the right child of.
 		\return The right child
