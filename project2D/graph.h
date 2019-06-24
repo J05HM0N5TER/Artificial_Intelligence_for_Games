@@ -238,9 +238,6 @@ public:
 		// Add the start node to the open list to start path-finding.
 		open_heap.add(a_start);
 
-		static int worse_f_score = 0;
-		worse_f_score = 0;
-
 		node<T>* current_node;
 		while (open_heap.size() != 0)
 		{
