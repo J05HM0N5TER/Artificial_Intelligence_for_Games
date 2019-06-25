@@ -22,6 +22,14 @@ bool Steering_behavioursApp::startup()
 	// the following path would be used instead: "./font/consolas.ttf"
 	m_font = new aie::Font("../bin/font/consolas.ttf", 32);
 
+
+
+	m_input = aie::Input::getInstance();
+
+
+
+	m_player = new player(m_2dRenderer, m_input, new aie::Texture("../bin/textures/player_texture.png"), { 200.0f, 200.0f });
+
 	return true;
 }
 
@@ -34,17 +42,16 @@ void Steering_behavioursApp::shutdown()
 
 void Steering_behavioursApp::update(float deltaTime) 
 {
-
-	// input example
-	aie::Input* input = aie::Input::getInstance();
+	m_player->update(deltaTime);
 
 	// exit the application
-	if (input->isKeyDown(aie::INPUT_KEY_ESCAPE))
+	if (m_input->isKeyDown(aie::INPUT_KEY_ESCAPE))
 		quit();
 }
 
 void Steering_behavioursApp::draw() 
 {
+
 
 	// wipe the screen to the background colour
 	clearScreen();
@@ -53,6 +60,7 @@ void Steering_behavioursApp::draw()
 	m_2dRenderer->begin();
 
 	// draw your stuff here!
+	m_player->draw();
 	
 	// output some text, uses the last used colour
 	m_2dRenderer->drawText(m_font, "Press ESC to quit", 0, 0);

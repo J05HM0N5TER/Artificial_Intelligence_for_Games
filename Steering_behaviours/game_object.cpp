@@ -24,7 +24,7 @@ game_object::game_object(aie::Renderer2D* a_renderer, aie::Texture* a_texture, c
 	//is_valid = true;
 }
 
-void game_object::update(const float a_delta_time)
+void game_object::calculate_location(const float a_delta_time)
 {
 	// Acceleration math.
 	m_speed += m_acceleration * a_delta_time;
@@ -65,10 +65,10 @@ void game_object::update(const float a_delta_time)
 		m_world_transform = m_local_transform;
 	}
 
-	// loop though all children and call update for them.
+	// loop though all children and call calculate_location for them.
 	for (size_t i = 0; i < m_children.size(); i++)
 	{
-		m_children[i]->update(a_delta_time);
+		m_children[i]->calculate_location(a_delta_time);
 	}
 
 	// Update position for collider.

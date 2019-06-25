@@ -29,7 +29,7 @@ public:
 
 
 	// \brief Updates the position for the game_object.
-	void update(const float a_delta_time);
+	void calculate_location(const float a_delta_time);
 
 
 	// \brief Draws the object on screen.
@@ -97,7 +97,7 @@ public:
 	// If the game_objetct is still valid.
 	bool is_valid;
 
-private:
+protected:
 
 	// The collision detector for the game_object.
 	circle* m_collider;

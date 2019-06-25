@@ -170,12 +170,16 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="actor.cpp" />
     <ClCompile Include="game_object.cpp" />
+    <ClCompile Include="player.cpp" />
     <ClCompile Include="Steering_behavioursApp.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="actor.h" />
     <ClInclude Include="game_object.h" />
+    <ClInclude Include="player.h" />
     <ClInclude Include="Steering_behavioursApp.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
