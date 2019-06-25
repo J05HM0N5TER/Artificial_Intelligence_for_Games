@@ -427,7 +427,7 @@ Vector3 Application2D::colour_picker(node<Vector2>* a_node, float a_mox_f_score)
 			// Calculate green value off of g score.
 			output.g = 1 - (a_node->get_f_score() / (float)a_mox_f_score);
 
-			// Calculate red value off of green value.
+		    // Calculate red value off of green value.
 			output.r = 1 - output.g;
 		}
 	}

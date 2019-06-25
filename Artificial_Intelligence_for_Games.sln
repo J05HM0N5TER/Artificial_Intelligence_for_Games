@@ -5,10 +5,7 @@ VisualStudioVersion = 15.0.28307.106
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Bootstrap", "bootstrap\Bootstrap.vcxproj", "{AF59BB0B-E059-4773-83DC-728A949647DA}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Artificial_Intelligence_for_Games", "project2D\Project2D.vcxproj", "{3F428D0C-1CC8-47C3-818A-A3C2972C74C9}"
-	ProjectSection(ProjectDependencies) = postProject
-		{AF59BB0B-E059-4773-83DC-728A949647DA} = {AF59BB0B-E059-4773-83DC-728A949647DA}
-	EndProjectSection
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Path_finding", "Path_finding\Project2D.vcxproj", "{3F428D0C-1CC8-47C3-818A-A3C2972C74C9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
