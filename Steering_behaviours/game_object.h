@@ -118,6 +118,7 @@ protected:
 	float m_acceleration;
 	// The maximum linear speed that the object is allowed to achieve.
 	float m_max_speed;
+	float m_max_reverse_speed;
 
 
 	// The size the object will be displayed at.

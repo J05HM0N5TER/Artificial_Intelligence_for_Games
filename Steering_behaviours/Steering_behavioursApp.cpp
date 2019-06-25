@@ -23,10 +23,7 @@ bool Steering_behavioursApp::startup()
 	m_font = new aie::Font("../bin/font/consolas.ttf", 32);
 
 
-
 	m_input = aie::Input::getInstance();
-
-
 
 	m_player = new player(m_2dRenderer, m_input, new aie::Texture("../bin/textures/player_texture.png"), { 200.0f, 200.0f });
 

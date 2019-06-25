@@ -6,7 +6,7 @@ game_object::game_object(aie::Renderer2D* a_renderer, aie::Texture* a_texture, c
 	const float a_spin_speed /*= 0.0f*/, const float a_orbit_speed /*= 0.0f*/) :
 	m_renderer(a_renderer), m_rotation_speed(a_spin_speed), m_orbit_speed(a_orbit_speed),
 	m_current_rotation(a_z_rotation), m_size(a_size), m_texture(a_texture),
-	m_parent(nullptr), m_collider(nullptr), is_valid(true), m_speed(0.0f), m_acceleration(0.0f), m_max_speed(500.0f)
+	m_parent(nullptr), m_collider(nullptr), is_valid(true), m_speed(0.0f), m_acceleration(0.0f), m_max_speed(500.0f), m_max_reverse_speed(-250.0f)
 {
 	// Set the parent to null at start so it is easy to detect that there is not one set yet.
 	//m_parent = nullptr;
@@ -33,9 +33,9 @@ void game_object::calculate_location(const float a_delta_time)
 	{
 		m_speed = m_max_speed;
 	}
-	else if (m_speed < -m_max_speed)
+	else if (m_speed < m_max_reverse_speed)
 	{
-		m_speed = -m_max_speed;
+		m_speed = m_max_reverse_speed;
 	}
 
 

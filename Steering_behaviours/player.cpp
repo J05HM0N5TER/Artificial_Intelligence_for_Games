@@ -5,7 +5,7 @@
 player::player(aie::Renderer2D* a_renderer, aie::Input* a_input, aie::Texture* a_texture, const Vector2 a_position) :
 	game_object(a_renderer, a_texture, a_position), m_input(a_input)
 {
-	m_size = { float(m_texture->getWidth()), float(m_texture->getHeight()) };
+	m_size = { float(m_texture->getWidth()) * 0.75f, float(m_texture->getHeight()) * 0.75f };
 }
 
 
