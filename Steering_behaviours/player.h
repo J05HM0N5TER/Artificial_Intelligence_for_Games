@@ -10,7 +10,7 @@ class player : public game_object
 public:
 	player(aie::Renderer2D* a_renderer, aie::Input* a_input ,aie::Texture* a_texture, const Vector2 a_position);
 
-	void update(float a_delta_time);
+	void update(float a_delta_time, Vector2& a_window_dimentions);
 	~player();
 
 private:

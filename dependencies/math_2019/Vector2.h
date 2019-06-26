@@ -66,12 +66,6 @@ public:
 	*/
 	Vector2 operator * (const Vector2 a_rhs) const;
 
-	/*!	\brief Multiplication operator overload.
-		\param scalar [in] The variable that the vector is being multiplied by.
-		\return The current vector by reference.
-	*/
-	Vector2 & operator * (const float scalar);
-
 	Vector2 & operator *= (const Vector2 a_rhs);
 
 	/*!	\brief Division operator overloader.

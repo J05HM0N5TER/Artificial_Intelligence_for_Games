@@ -69,12 +69,6 @@ public:
 	*/
 	Vector4 operator * (const Vector4 a_rhs) const;
 
-	/*!	\brief Multiplication operator overload.
-		\param scalar [in] The variable that the vector is being multiplied by.
-		\return The current vector by reference.
-	*/
-	Vector4 & operator * (const float scalar);
-
 	/*!	\brief Multiplication and equality operator overloader.
 		\param The vector that your Multiplying to this one.
 		\return The pointer to the current vector that your Multiplying.
