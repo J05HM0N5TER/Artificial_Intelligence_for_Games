@@ -34,7 +34,7 @@ public:
 	operator const float* () const;
 
 	/*!	\brief Addition operator overload.
-		\param The vector that your plussing to this one.
+		\param The vector that your adding to this one.
 		\return A vector with the sum of both vectors being added together.
 	*/
 	Vector4 operator + (const Vector4& a_rhs) const;
@@ -51,43 +51,37 @@ public:
 	*/
 	Vector4 operator - (const Vector4& a_rhs) const;
 
-	/*!	\brief Subtraction and equality operator overloader.
-		\param The vector that your plussing to this one.
+	/*!	\brief Subtraction and equality operator over-loader.
+		\param The vector that your adding to this one.
 		\return The pointer to the current vector that your subtracting from.
 	*/
 	Vector4& operator -= (const Vector4& a_rhs);
 
-	/*!	\brief Multiplication operator overloader.
+	/*!	\brief Multiplication operator over-loader.
 		\param scalar [in] The amount that you are multiplying vector by.
 		\return A vector with the completed multiplication.
 	*/
 	Vector4 operator * (const float scalar) const;
 
-	/*!	\brief Multiplication operator.
-		\param a_rhs [in] The vector that is being used to multiply this vector.
-		\return A vector with the results.
+	/*!	\brief Multiplication and assignment operator over-loader.
+		\param scalar [in] The amount that you are multiplying vector by.
+		\return A vector with the completed multiplication.
 	*/
-	Vector4 operator * (const Vector4 a_rhs) const;
+	Vector4 & operator *= (const float scalar);
 
-	/*!	\brief Multiplication and equality operator overloader.
-		\param The vector that your Multiplying to this one.
-		\return The pointer to the current vector that your Multiplying.
-	*/
-	Vector4 & operator *= (const Vector4 a_rhs);
-
-	/*!	\brief Division operator overloader.
+	/*!	\brief Division operator over-loader.
 		\param The amount that you are dividing vector by.
 		\return A vector with the completed division.
 	*/
 	Vector4 operator / (float scalar) const;
 
-	/*!	\brief Division and equality operator overloader.
-		\param The vector that your plussing to this one.
+	/*!	\brief Division and equality operator over-loader.
+		\param The vector that your adding to this one.
 		\return The pointer to the current vector that your subtracting from.
 	*/
 	Vector4& operator /= (float scalar);
 
-	/*!	\brief Equality operator overloader.
+	/*!	\brief Equality operator over-loader.
 		\param The vector that are copying over the top of the current one.
 		\return The pointer to the current vector.
 	*/
@@ -104,7 +98,6 @@ public:
 
 	//! \brief Normalised the vector.
 	Vector4& normalise();
-
 
 	/*!	\brief Returns the dot product of two vectors.
 		\param a_Vector4 [in] The second angle that is being compared.

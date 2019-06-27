@@ -31,7 +31,7 @@ public:
 	operator const float* () const;
 
 	/*!	\brief Addition operator overload.
-		\param The vector that your plussing to this one.
+		\param The vector that your adding to this one.
 		\return A vector with the sum of both vectors being added together.
 	*/
 	Vector2 operator + (const Vector2& a_rhs) const;
@@ -48,39 +48,34 @@ public:
 	*/
 	Vector2 operator - (const Vector2& a_rhs) const;
 
-	/*!	\brief Subtraction and equality operator overloader.
-		\param The vector that your plussing to this one.
+	/*!	\brief Subtraction and equality operator over-loader.
+		\param The vector that your adding to this one.
 		\return The pointer to the current vector that your subtracting from.
 	*/
 	Vector2& operator -= (const Vector2& a_rhs);
 
-	/*!	\brief Multiplication operator overloader.
+	/*!	\brief Multiplication operator over-loader.
 		\param scalar [in] The amount that you are multiplying vector by.
 		\return A vector with the completed multiplication.
 	*/
 	Vector2 operator * (const float scalar) const;
 
-	/*!	\brief Multiplication operator.
-		\param a_rhs [in] The vector that is being used to multiply this vector.
-		\return A vector with the results.
-	*/
-	Vector2 operator * (const Vector2 a_rhs) const;
 
-	Vector2 & operator *= (const Vector2 a_rhs);
+	Vector2 & operator *= (const float scalar);
 
-	/*!	\brief Division operator overloader.
-		\param The amount that you are dividing vector by.
+	/*!	\brief Division operator over-loader.
+		\param The amount that you are dividing this vector by.
 		\return A vector with the completed division.
 	*/
 	Vector2 operator / (float scalar) const;
 
-	/*!	\brief Division and equality operator overloader.
-		\param The vector that your plussing to this one.
+	/*!	\brief Division and equality operator over-loader.
+		\param The vector that your dividing this vector by.
 		\return The pointer to the current vector that your subtracting from.
 	*/
 	Vector2& operator /= (float scalar);
 
-	/*!	\brief Equality operator overloader.
+	/*!	\brief Equality operator over-loader.
 		\param The vector that are copying over the top of the current one.
 		\return The pointer to the current vector.
 	*/

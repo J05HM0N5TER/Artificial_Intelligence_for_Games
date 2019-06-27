@@ -53,7 +53,7 @@ public:
 
 
 	/*!	\brief Addition operator overload.
-		\param The vector that your plussing to this one.
+		\param The vector that your adding to this one.
 		\return A vector with the sum of both vectors being added together.
 	*/
 	Vector3<T> operator + (const Vector3<T>& a_rhs) const
@@ -82,8 +82,8 @@ public:
 		return Vector3<T>(x - a_rhs.x, y - a_rhs.y, z - a_rhs.z);
 	}
 
-	/*!	\brief Subtraction and equality operator overloader.
-		\param The vector that your plussing to this one.
+	/*!	\brief Subtraction and equality operator over-loader.
+		\param The vector that your adding to this one.
 		\return The pointer to the current vector that your subtracting from.
 	*/
 	Vector3<T>& operator -= (const Vector3<T>& a_rhs)
@@ -94,7 +94,7 @@ public:
 		return *this;
 	}
 
-	/*!	\brief Multiplication operator overloader.
+	/*!	\brief Multiplication operator over-loader.
 		\param scalar [in] The amount that you are multiplying vector by.
 		\return A vector with the completed multiplication.
 	*/
@@ -132,7 +132,7 @@ public:
 		return *this;
 	}
 
-	/*!	\brief Division operator overloader.
+	/*!	\brief Division operator over-loader.
 		\param The amount that you are dividing vector by.
 		\return A vector with the completed division.
 	*/
@@ -141,8 +141,8 @@ public:
 		return Vector3<T>(x / scalar, y / scalar, z / scalar);
 	}
 
-	/*!	\brief Division and equality operator overloader.
-		\param The vector that your plussing to this one.
+	/*!	\brief Division and equality operator over-loader.
+		\param The vector that your adding to this one.
 		\return The pointer to the current vector that your subtracting from.
 	*/
 	Vector3<T>& operator /= (float scalar)
@@ -153,7 +153,7 @@ public:
 		return *this;
 	}
 
-	/*!	\brief Equality operator overloader.
+	/*!	\brief Equality operator over-loader.
 		\param The vector that are copying over the top of the current one.
 		\return The pointer to the current vector.
 	*/

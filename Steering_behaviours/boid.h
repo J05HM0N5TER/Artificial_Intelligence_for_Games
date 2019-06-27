@@ -7,7 +7,7 @@ class flock;
 class boid
 {
 public:
-	boid(aie::Renderer2D* a_renderer, aie::Texture* a_texture, Vector2& a_spawn_position);
+	boid(aie::Renderer2D* a_renderer, aie::Texture* a_texture, Vector2& a_spawn_position, flock* a_flock);
 
 	void set_flock(flock* a_flock);
 
@@ -29,11 +29,13 @@ private:
 	float m_sprite_timer = 0.0f;
 	int m_current_sprite = 0;
 	
-	static const float sprite_count;
+	static const float SPRITE_COUNT;
 
-	static const float neighbour_radus_squared;
-	static const float boid_speed;
-	static const float seperation_force_mag;
-	static const float cohesion_force_mag;
+	static const float NEIGHBOUR_RADUS;
+	static const float BOID_SPEED;
+	static const float SEPERATION_FORCE_MAG;
+	static const float COHESION_FOECE_MAG;
+	static const float CIECLE_FORCE_MULT;
+	static const float ALIGHMENT_FORCE_MULT;
 };
 

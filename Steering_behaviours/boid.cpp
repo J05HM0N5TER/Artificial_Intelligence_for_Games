@@ -2,32 +2,35 @@
 #include "flock.h"
 #include <iostream>
 
-const float boid::sprite_count = 4.0f;
-const float boid::neighbour_radus_squared = 25.0f;
-const float boid::boid_speed = 20.0f;
-const float boid::seperation_force_mag = 20.0f;
-const float boid::cohesion_force_mag = 20.0f;
+const float boid::SPRITE_COUNT = 4.0f;
+const float boid::NEIGHBOUR_RADUS = 25.0f;
+const float boid::BOID_SPEED = 100.0f;
+const float boid::SEPERATION_FORCE_MAG = 20.0f;
+const float boid::COHESION_FOECE_MAG = 10.0f;
+const float boid::CIECLE_FORCE_MULT = 10.0f;
+const float boid::ALIGHMENT_FORCE_MULT = 20.0f;
 
 
-boid::boid(aie::Renderer2D* a_renderer, aie::Texture* a_texture, Vector2& a_spawn_position) :
-	m_renderer(a_renderer), m_texture(a_texture)
+boid::boid(aie::Renderer2D* a_renderer, aie::Texture* a_texture, Vector2& a_spawn_position, flock* a_flock) :
+	m_renderer(a_renderer), m_texture(a_texture), m_parent_flock(a_flock)
 {
-	m_draw_size = { 50.0f, 30.0f };
+	m_draw_size = { 10.0f, 5.0f };
 
 	m_position = a_spawn_position;
 
 	m_velocity = Vector2( 0.0f, 30.0f );
 
 	// If velocity is invalid.
-	if (m_velocity.magnitude() <= 0.000001)
+	float temp_mag = this->m_velocity.magnitude();
+	if (temp_mag <= 0.00001f)
 	{
 		// set to go east.
-		m_velocity = { boid_speed, 0.0f };
+		this->m_velocity = Vector2(BOID_SPEED, 0.0f);
 	}
 	else
 	{
-		m_velocity /= m_velocity.magnitude();
-		m_velocity *= boid_speed;
+		this->m_velocity /= temp_mag;
+		this->m_velocity *= BOID_SPEED;
 	}
 
 }
@@ -47,7 +50,7 @@ void boid::update(float a_delta_time, Vector2& a_window_dimentions)
 		m_current_sprite++;
 		m_sprite_timer = 0.0f;
 	}
-	if (m_current_sprite > sprite_count)
+	if (m_current_sprite > SPRITE_COUNT)
 	{
 		m_current_sprite = 0;
 	}
@@ -62,11 +65,24 @@ void boid::update(float a_delta_time, Vector2& a_window_dimentions)
 			continue;
 		}
 		// Check distance and if it is in the neighbourhood.
-		if ((a_boid->m_position - this->m_position).square_magnitude() < neighbour_radus_squared)
+		if ((a_boid->m_position - this->m_position).square_magnitude() < NEIGHBOUR_RADUS * NEIGHBOUR_RADUS)
 		{
 			neighbours.push_back(a_boid);
 		}
 	}
+
+	// ---Stay in a circle---
+	Vector2 world_centre(a_window_dimentions / 2);
+	Vector2 to_centre = world_centre - this->m_position;
+	float to_centre_mag = to_centre.magnitude();
+	float distance_outside_circle = to_centre_mag - 360;
+	if (distance_outside_circle > 0.0f)
+	{
+		to_centre /= to_centre_mag;
+		to_centre *= distance_outside_circle * CIECLE_FORCE_MULT;
+		this->apply_force(to_centre);
+	}
+
 
 	// --Separation--
 	Vector2 seperation_force;
@@ -74,7 +90,7 @@ void boid::update(float a_delta_time, Vector2& a_window_dimentions)
 	{
 		Vector2 from_neibour_to_us = this->m_position - a_neighbour->m_position;
 		from_neibour_to_us /= from_neibour_to_us.magnitude();
-		from_neibour_to_us *= seperation_force;
+		from_neibour_to_us *= SEPERATION_FORCE_MAG;
 		seperation_force += from_neibour_to_us;
 	}
 
@@ -94,7 +110,7 @@ void boid::update(float a_delta_time, Vector2& a_window_dimentions)
 		Vector2 from_us_to_average = average_neighbour_position - this->m_position;
 
 		from_us_to_average /= from_us_to_average.magnitude();
-		from_us_to_average *= cohesion_force_mag;
+		from_us_to_average *= COHESION_FOECE_MAG;
 		this->apply_force(from_us_to_average);
 	}
 
@@ -108,21 +124,24 @@ void boid::update(float a_delta_time, Vector2& a_window_dimentions)
 			average_neighbour_velocity += a_neighbour->m_velocity;
 		}
 		average_neighbour_velocity /= neighbours.size();
+
+		this->apply_force(average_neighbour_velocity *= ALIGHMENT_FORCE_MULT);
 	}
 
 	// If velocity is invalid.
-	if (m_velocity.magnitude() <= 0.000001)
+	float temp_mag = this->m_velocity.magnitude();
+	if (temp_mag <= 0.00001f)
 	{
 		// set to go east.
-		m_velocity = { boid_speed, 0.0f };
+		this->m_velocity = Vector2( BOID_SPEED, 0.0f );
 	}
 	else
 	{
-		m_velocity /= m_velocity.magnitude();
-		m_velocity *= boid_speed;
+		this->m_velocity /= temp_mag;
+		this->m_velocity *= BOID_SPEED;
 	}
 
-	m_position += this->m_velocity * a_delta_time;
+	this->m_position += this->m_velocity * a_delta_time;
 
 	
 
@@ -130,17 +149,23 @@ void boid::update(float a_delta_time, Vector2& a_window_dimentions)
 
 void boid::draw()
 {
-	m_renderer->setUVRect(m_current_sprite / sprite_count, 0, 1 / sprite_count, 1);
+	// Set current sprite in texture.
+	m_renderer->setUVRect(m_current_sprite / SPRITE_COUNT, 0, 1 / SPRITE_COUNT, 1);
 
-	Vector2 normalised = m_velocity.normalised();
+	// Get the normalised velocity so that I don't have to call that function twice.
+	Vector2 normalised = this->m_velocity.normalised();
 
+	// Draw the sprite.
 	m_renderer->drawSprite(m_texture, m_position.x, m_position.y, m_draw_size.x, m_draw_size.y, atan2f(normalised.y, normalised.x) - 3.1415f / 2);
 
+	// Reset the UV rect for other things to use.
 	m_renderer->setUVRect(0, 0, 1, 1);
+
+	//m_renderer->drawCircle(m_position.x, m_position.y, 6.0f);
 
 }
 
 void boid::apply_force(Vector2 & a_force)
 {
-	m_velocity += a_force;
+	this->m_velocity += a_force;
 }
