@@ -25,9 +25,9 @@ bool Steering_behavioursApp::startup()
 
 	// TODO: remember to change this when redistributing a build!
 	// the following path would be used instead: "./font/consolas.ttf"
-	m_font = new aie::Font("./bin/font/consolas.ttf", 32);
+	m_font = new aie::Font("../bin/font/consolas.ttf", 32);
 
-	m_bird_sprite = new aie::Texture("./bin/textures/bird_sprite_sheet.png");
+	m_bird_sprite = new aie::Texture("../bin/textures/bird_sprite_sheet.png");
 
 	//m_actors.push_back(new actor(m_2dRenderer, m_bird_sprite, { (1.0f) * spacing, (1.0f) * spacing }));
 	m_window_dimentions = { float(getWindowWidth()), float(getWindowHeight()) };

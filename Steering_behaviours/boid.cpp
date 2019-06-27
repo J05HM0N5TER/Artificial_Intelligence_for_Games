@@ -75,7 +75,7 @@ void boid::update(float a_delta_time, Vector2& a_window_dimentions)
 	Vector2 world_centre(a_window_dimentions / 2);
 	Vector2 to_centre = world_centre - this->m_position;
 	float to_centre_mag = to_centre.magnitude();
-	float distance_outside_circle = to_centre_mag - 360;
+	float distance_outside_circle = to_centre_mag - a_window_dimentions.y / 2;
 	if (distance_outside_circle > 0.0f)
 	{
 		to_centre /= to_centre_mag;
