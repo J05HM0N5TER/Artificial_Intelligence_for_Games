@@ -48,8 +48,8 @@ public:
 	}
 
 	/*!
-		\brief Addition operator overloader.
-		\param The vector that your plussing to this one.
+		\brief Addition operator over-loader.
+		\param The vector that your adding to this one.
 		\return A vector with the sum of both vectors being added together.
 	*/
 	Vector4<T> operator + (const Vector4<T>& a_rhs) const
@@ -58,8 +58,8 @@ public:
 	}
 
 	/*!
-		\brief Subtraction and equality operator overloader.
-		\param The vector that your plussing to this one.
+		\brief Subtraction and equality operator over-loader.
+		\param The vector that your adding to this one.
 		\return The pointer to the current vector that your subtracting from.
 	*/
 	Vector4<T>& operator -= (const Vector4<T>& a_rhs)
@@ -71,7 +71,7 @@ public:
 	}
 
 	/*!
-		\brief Multiplication operator overloader.
+		\brief Multiplication operator over-loader.
 		\param The amount that you are multiplying vector by.
 		\return A vector with the completed multiplication.
 	*/
@@ -81,8 +81,8 @@ public:
 	}
 
 	/*!
-		\brief Division and equality operator overloader.
-		\param The vector that your plussing to this one.
+		\brief Division and equality operator over-loader.
+		\param The vector that your adding to this one.
 		\return The pointer to the current vector that your subtracting from.
 	*/
 	Vector4<T>& operator /= (float scalar)
@@ -94,7 +94,7 @@ public:
 	}
 
 	/*!
-		\brief Equality operator overloader.
+		\brief Equality operator over-loader.
 		\param The vector that are copying over the top of the current one.
 		\return The pointer to the current vector.
 	*/

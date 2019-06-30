@@ -15,27 +15,27 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Steering_behavioursApp.cpp">
+    <ClCompile Include="FlockingApp.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="game_object.cpp">
+    <ClCompile Include="boid.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="player.cpp">
+    <ClCompile Include="flock.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Steering_behavioursApp.h">
+    <ClInclude Include="FlockingApp.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="game_object.h">
+    <ClInclude Include="boid.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="player.h">
+    <ClInclude Include="flock.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
