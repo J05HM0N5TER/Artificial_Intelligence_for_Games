@@ -2,15 +2,14 @@
 
 #include "Application.h"
 #include "Renderer2D.h"
+#include "flock.h"
 #include "Input.h"
-#include "Vector2.h"
 
-class Steering_behavioursApp : public aie::Application 
-{
+class FlockingApp : public aie::Application {
 public:
 
-	Steering_behavioursApp();
-	virtual ~Steering_behavioursApp();
+	FlockingApp();
+	virtual ~FlockingApp();
 
 	virtual bool startup();
 	virtual void shutdown();
@@ -21,6 +20,8 @@ public:
 protected:
 
 	aie::Texture* m_bird_sprite;
+
+	flock* m_flock;
 
 	aie::Input* m_input;
 

@@ -128,6 +128,21 @@ void boid::update(float a_delta_time, Vector2& a_window_dimentions)
 		this->apply_force(average_neighbour_velocity *= ALIGHMENT_FORCE_MULT);
 	}
 
+	/*
+	// --Cursor interaction--
+	Vector2 boid_to_cursor = flock->cursor_position - this->m_position;
+
+	float force_magnitude = boid_to_cursor.magnitude();
+
+	force_magnitude *= 0.1f;
+	force_magnitude = flock->attract_mult * 10000.0f / (force_magnitude * force_magnitude + 1?)
+
+	boid_to_cursor /= boid_to_cursor.magnitude();
+	boid_to_cursor *= force_magnitude;
+
+	this->apply_force(boid_to_cursor);
+	*/
+
 	// If velocity is invalid.
 	float temp_mag = this->m_velocity.magnitude();
 	if (temp_mag <= 0.00001f)

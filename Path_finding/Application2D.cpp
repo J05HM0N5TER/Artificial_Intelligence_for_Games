@@ -46,7 +46,7 @@ bool Application2D::startup()
 		{
 			m_graph->create_edge(
 				m_graph->m_nodes[i * width + j],
-				m_graph->m_nodes[i * width + (j + 1)], spacing);
+				m_graph->m_nodes[i * width + (j + 1)], float(spacing));
 		}
 	}
 
@@ -57,7 +57,7 @@ bool Application2D::startup()
 		{
 			m_graph->create_edge(
 				m_graph->m_nodes[i * width + j],
-				m_graph->m_nodes[(i + 1) * width + j], spacing);
+				m_graph->m_nodes[(i + 1) * width + j], float(spacing));
 		}
 	}
 
