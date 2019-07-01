@@ -17,9 +17,20 @@ public:
 	void draw();
 
 	std::vector<boid*> m_boids;
+
+
+	float SPRITE_COUNT = 4.0f;
+	float SPRITE_ANIMATION_DELAY = 0.5f;
+	float NEIGHBOUR_RADUS = 25.0f;
+	float BOID_SPEED = 100.0f;
+	float SEPERATION_FORCE_MAG = 20.0f;
+	float COHESION_FOECE_MAG = 20.0f;
+	float CIECLE_FORCE_MULT = 10.0f;
+	float ALIGHMENT_FORCE_MULT = 7.0f;
 private:
 
 	aie::Renderer2D* m_renderer;
 	aie::Texture* m_texture;
+
 };
 

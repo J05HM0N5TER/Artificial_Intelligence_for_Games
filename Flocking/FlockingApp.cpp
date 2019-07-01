@@ -30,7 +30,7 @@ bool FlockingApp::startup()
 
 	m_flock = new flock(m_2dRenderer, m_bird_sprite);
 
-	m_flock->create_random_boids(3000, m_window_dimentions);
+	m_flock->create_random_boids(4000, m_window_dimentions);
 
 	m_input = aie::Input::getInstance();
 

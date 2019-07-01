@@ -18,6 +18,8 @@ public:
 
 	Vector2 m_position;
 	Vector2 m_velocity;
+
+	float m_sprite_timer = 0.0f;
 private:
 	Vector2 m_draw_size;
 	aie::Renderer2D* m_renderer;
@@ -26,16 +28,6 @@ private:
 
 	flock* m_parent_flock;
 
-	float m_sprite_timer = 0.0f;
 	int m_current_sprite = 0;
-	
-	static const float SPRITE_COUNT;
-
-	static const float NEIGHBOUR_RADUS;
-	static const float BOID_SPEED;
-	static const float SEPERATION_FORCE_MAG;
-	static const float COHESION_FOECE_MAG;
-	static const float CIECLE_FORCE_MULT;
-	static const float ALIGHMENT_FORCE_MULT;
 };
 

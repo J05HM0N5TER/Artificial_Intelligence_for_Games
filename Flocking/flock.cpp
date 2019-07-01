@@ -1,5 +1,5 @@
 #include "flock.h"
-
+#include <math.h>
 
 flock::flock(aie::Renderer2D* a_renderer, aie::Texture* a_texture) :
 	m_renderer(a_renderer), m_texture(a_texture)
@@ -17,6 +17,12 @@ void flock::create_random_boids(int a_amount, Vector2 & a_window_dimentions)
 	{
 		Vector2 new_spawn_position = { float((rand() + 1) % (int)a_window_dimentions.x), float((rand() + 1) % (int)a_window_dimentions.y) };
 		boid* new_boid = new boid(m_renderer, m_texture, new_spawn_position, this);
+		float randVal = float(rand())/ RAND_MAX;
+		new_boid->m_sprite_timer = fmod(randVal, this->SPRITE_ANIMATION_DELAY);
+
+
+
+
 		m_boids.push_back(new_boid);
 	}
 }
