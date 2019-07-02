@@ -180,3 +180,18 @@ void boid::apply_force(Vector2 & a_force)
 {
 	this->m_velocity += a_force;
 }
+
+const Vector2 & boid::get_position() const
+{
+	return m_position;
+}
+
+void boid::set_position(const Vector2 & a_position)
+{
+	m_position = a_position;
+}
+
+const float boid::get_radus() const
+{
+	return m_parent_flock->NEIGHBOUR_RADUS;
+}

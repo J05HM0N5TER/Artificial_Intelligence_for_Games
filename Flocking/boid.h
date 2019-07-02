@@ -19,6 +19,11 @@ public:
 	Vector2 m_position;
 	Vector2 m_velocity;
 
+	const Vector2 & get_position() const;
+	void set_position(const Vector2 & a_position);
+
+	const float get_radus() const;
+
 	float m_sprite_timer = 0.0f;
 private:
 	Vector2 m_draw_size;

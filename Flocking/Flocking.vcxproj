@@ -174,11 +174,13 @@
     <ClCompile Include="flock.cpp" />
     <ClCompile Include="FlockingApp.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="quad_tree.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="boid.h" />
     <ClInclude Include="flock.h" />
     <ClInclude Include="FlockingApp.h" />
+    <ClInclude Include="quad_tree.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
