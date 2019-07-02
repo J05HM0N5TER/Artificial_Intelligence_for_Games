@@ -9,6 +9,7 @@
 !glfw3dll.lib
 temp/
 dependencies/Bootstrap
+*.csv
 
 # User-specific files
 *.suo

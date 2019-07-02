@@ -32,7 +32,7 @@ void boid::set_flock(flock * a_flock)
 }
 
 
-void boid::update(float a_delta_time, Vector2& a_window_dimentions)
+void boid::update(float a_delta_time, const Vector2& a_window_dimentions, const quad_tree & a_quad_tree)
 {
 	m_sprite_timer += a_delta_time;
 
@@ -48,19 +48,9 @@ void boid::update(float a_delta_time, Vector2& a_window_dimentions)
 
 
 	std::vector<boid*> neighbours;
-	for (boid* a_boid : m_parent_flock->m_boids)
-	{
-		// Skip if this is the boid that it is checking.
-		if (a_boid == this)
-		{
-			continue;
-		}
-		// Check distance and if it is in the neighbourhood.
-		if ((a_boid->m_position - this->m_position).square_magnitude() < m_parent_flock->NEIGHBOUR_RADUS * m_parent_flock->NEIGHBOUR_RADUS)
-		{
-			neighbours.push_back(a_boid);
-		}
-	}
+
+	a_quad_tree.search(circle(this->get_position(), m_parent_flock->NEIGHBOUR_RADUS), neighbours, this);
+
 
 	// ---Stay in a circle---
 	Vector2 world_centre(a_window_dimentions / 2);

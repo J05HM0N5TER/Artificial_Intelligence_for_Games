@@ -4,6 +4,7 @@
 #include "Renderer2D.h"
 #include "flock.h"
 #include "Input.h"
+#include "quad_tree.h"
 
 class FlockingApp : public aie::Application {
 public:

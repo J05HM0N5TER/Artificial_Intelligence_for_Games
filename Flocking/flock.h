@@ -3,6 +3,7 @@
 #include "Texture.h"
 #include <vector>
 #include "boid.h"
+#include "quad_tree.h"
 
 class flock
 {
@@ -28,6 +29,8 @@ public:
 	float CIECLE_FORCE_MULT = 10.0f;
 	float ALIGHMENT_FORCE_MULT = 7.0f;
 private:
+
+	quad_tree* m_quad_tree;
 
 	aie::Renderer2D* m_renderer;
 	aie::Texture* m_texture;

@@ -31,6 +31,7 @@ bool FlockingApp::startup()
 	m_flock = new flock(m_2dRenderer, m_bird_sprite);
 
 	m_flock->create_random_boids(4000, m_window_dimentions);
+	//m_flock->create_boid(1, Vector2(2, 2));
 
 	m_input = aie::Input::getInstance();
 
@@ -44,6 +45,8 @@ void FlockingApp::shutdown() {
 }
 
 void FlockingApp::update(float deltaTime) {
+
+	//deltaTime = 0.1;
 
 	m_window_dimentions = { float(getWindowWidth()), float(getWindowHeight()) };
 

@@ -1,6 +1,7 @@
 #pragma once
 #include "Vector2.h"
 #include "Renderer2D.h"
+#include "quad_tree.h"
 
 class flock;
 
@@ -11,7 +12,7 @@ public:
 
 	void set_flock(flock* a_flock);
 
-	void update(float a_delta_time, Vector2& a_window_dimentions);
+	void update(float a_delta_time, const Vector2& a_window_dimentions, const quad_tree & a_quad_tree);
 	void draw();
 
 	void apply_force(Vector2& a_force);
