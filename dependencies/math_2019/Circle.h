@@ -22,6 +22,8 @@ public:
 	const Vector2 get_position() const;
 	void set_position(const Vector2 & a_position);
 
+	circle & operator = (const circle & a_rhs);
+
 private:
 	float m_radus = 0.0f;
 	Vector2 m_position;

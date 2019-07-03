@@ -20,6 +20,8 @@ public:
 	const float get_distance() const;
 	void set_distance(const float a_distance);
 
+	line & operator = (const line & a_rhs);
+
 private:
 	Vector2 m_normal = DEFAULT_NORMAL;
 	float m_distance = 0.0f;

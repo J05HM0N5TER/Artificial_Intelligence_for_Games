@@ -2,7 +2,6 @@
 #ifndef QUAD_TREE_H
 #define QUAD_TREE_H
 
-#include "aabb.h"
 #include <vector>
 #include "Collision_manager.h"
 #include "Renderer2D.h"
@@ -12,14 +11,15 @@ class boid;
 class quad_tree
 {
 public:
-	quad_tree() = delete;
-	quad_tree(const aabb & a_boundry, int a_capacity = 4);
+	quad_tree(aabb & a_boundry = aabb(), const int & a_capacity = 4);
 	~quad_tree();
+
+	void restart(aabb & a_boundry, const int & a_capacity = 4);
 
 	bool insert(boid * a_boid);
 
-	void search(const aabb & a_range, std::vector<boid*>& a_found_out, boid* a_exclude_boid = nullptr) const;
-	void search(const circle & a_range, std::vector<boid*>& a_found_out, boid* a_exclude_boid = nullptr) const;
+	void search(const aabb & a_range, std::vector<boid*>& a_found_out, const boid* a_exclude_boid = nullptr) const;
+	void search(const circle & a_range, std::vector<boid*>& a_found_out, const boid* a_exclude_boid = nullptr) const;
 
 	void clear();
 

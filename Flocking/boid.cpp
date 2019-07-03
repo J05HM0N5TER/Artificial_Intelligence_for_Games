@@ -46,10 +46,22 @@ void boid::update(float a_delta_time, const Vector2& a_window_dimentions, const 
 		m_current_sprite = 0;
 	}
 
+	std::vector<boid*> search;
+
+	a_quad_tree.search(aabb(this->get_position(), Vector2(m_parent_flock->NEIGHBOUR_RADUS * 1.5f, m_parent_flock->NEIGHBOUR_RADUS * 1.5f)), search, this);
 
 	std::vector<boid*> neighbours;
 
-	a_quad_tree.search(circle(this->get_position(), m_parent_flock->NEIGHBOUR_RADUS), neighbours, this);
+	for (boid* a_boid : search)
+	{
+		// Check distance and if it is in the neighbourhood.
+		if ((a_boid->m_position - this->m_position).square_magnitude() < m_parent_flock->NEIGHBOUR_RADUS * m_parent_flock->NEIGHBOUR_RADUS)
+		{
+			neighbours.push_back(a_boid);
+		}
+	}
+
+	search.clear();
 
 
 	// ---Stay in a circle---
@@ -86,7 +98,7 @@ void boid::update(float a_delta_time, const Vector2& a_window_dimentions, const 
 		{
 			average_neighbour_position += a_neighbour->m_position;
 		}
-		average_neighbour_position /= neighbours.size();
+		average_neighbour_position /= float(neighbours.size());
 
 		Vector2 from_us_to_average = average_neighbour_position - this->m_position;
 
@@ -104,7 +116,7 @@ void boid::update(float a_delta_time, const Vector2& a_window_dimentions, const 
 		{
 			average_neighbour_velocity += a_neighbour->m_velocity;
 		}
-		average_neighbour_velocity /= neighbours.size();
+		average_neighbour_velocity /= float(neighbours.size());
 
 		this->apply_force(average_neighbour_velocity *= m_parent_flock->ALIGHMENT_FORCE_MULT);
 	}

@@ -26,6 +26,8 @@ public:
 	const Vector2 get_max() const;
 	const Vector2 get_min() const;
 
+	aabb& operator = (const aabb & a_rhs);
+
 private:
 	Vector2 m_position;
 

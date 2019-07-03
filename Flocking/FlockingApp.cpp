@@ -30,7 +30,7 @@ bool FlockingApp::startup()
 
 	m_flock = new flock(m_2dRenderer, m_bird_sprite);
 
-	m_flock->create_random_boids(4000, m_window_dimentions);
+	m_flock->create_random_boids(40, m_window_dimentions);
 	//m_flock->create_boid(1, Vector2(2, 2));
 
 	m_input = aie::Input::getInstance();
@@ -42,6 +42,8 @@ void FlockingApp::shutdown() {
 
 	delete m_font;
 	delete m_2dRenderer;
+	delete m_flock;
+	delete m_bird_sprite;
 }
 
 void FlockingApp::update(float deltaTime) {

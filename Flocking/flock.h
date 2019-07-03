@@ -9,6 +9,8 @@ class flock
 {
 public:
 	flock(aie::Renderer2D* a_renderer, aie::Texture* a_texture);
+	~flock();
+
 
 	void create_boid(int a_amount, Vector2& a_spawn_position);
 
@@ -30,7 +32,7 @@ public:
 	float ALIGHMENT_FORCE_MULT = 7.0f;
 private:
 
-	quad_tree* m_quad_tree;
+	quad_tree m_quad_tree;
 
 	aie::Renderer2D* m_renderer;
 	aie::Texture* m_texture;

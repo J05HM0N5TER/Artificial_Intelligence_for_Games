@@ -2,7 +2,7 @@
 #include "boid.h"
 
 
-quad_tree::quad_tree(const aabb & a_boundry, int a_capacity /*= 4*/) :
+quad_tree::quad_tree(aabb & a_boundry/* = aabb()*/, const int & a_capacity/* = 4*/) :
 	m_boundry(a_boundry), m_capacity(a_capacity), m_north_east(nullptr), 
 	m_north_west(nullptr), m_south_east(nullptr), m_south_west(nullptr), 
 	m_is_divided(false)
@@ -10,10 +10,16 @@ quad_tree::quad_tree(const aabb & a_boundry, int a_capacity /*= 4*/) :
 
 quad_tree::~quad_tree()
 {
-	delete this->m_north_east;
-	delete this->m_north_west;
-	delete this->m_south_east;
-	delete this->m_south_west;
+	this->clear();
+}
+
+void quad_tree::restart(aabb & a_boundry, const int & a_capacity)
+{
+	this->clear();
+
+	m_capacity = a_capacity;
+
+	m_boundry = a_boundry;
 }
 
 bool quad_tree::insert(boid * a_boid)
@@ -59,30 +65,33 @@ bool quad_tree::insert(boid * a_boid)
 	}
 }
 
-void quad_tree::search(const aabb & a_range, std::vector<boid*>& a_found_out, boid* a_exclude_boid/* = nullptr*/) const
+void quad_tree::search(const aabb & a_range, std::vector<boid*>& a_found_out, const boid* a_exclude_boid/* = nullptr*/) const
 {
 	if (!collision_manager::aabb_to_aabb(this->m_boundry, a_range))
 	{
 		return;
 	}
 
-	for (char i = 0; i < this->m_boids.size(); i++)
+	for (boid* a_boid : m_boids)
 	{
-		if (contains(a_range, this->m_boids[i]))
+		if (a_boid == a_exclude_boid)
+			continue;
+
+		if (contains(a_range, a_boid))
 		{
-			a_found_out.push_back(m_boids[i]);
+			a_found_out.push_back(a_boid);
 		}
 		if (this->m_is_divided)
 		{
-			this->m_north_east->search(a_range, a_found_out);
-			this->m_north_west->search(a_range, a_found_out);
-			this->m_south_east->search(a_range, a_found_out);
-			this->m_south_west->search(a_range, a_found_out);
+			this->m_north_east->search(a_range, a_found_out, a_exclude_boid);
+			this->m_north_west->search(a_range, a_found_out, a_exclude_boid);
+			this->m_south_east->search(a_range, a_found_out, a_exclude_boid);
+			this->m_south_west->search(a_range, a_found_out, a_exclude_boid);
 		}
 	}
 }
 
-void quad_tree::search(const circle & a_range, std::vector<boid*>& a_found_out, boid* a_exclude_boid/* = nullptr*/) const
+void quad_tree::search(const circle & a_range, std::vector<boid*>& a_found_out, const boid* a_exclude_boid/* = nullptr*/) const
 {
 	if (!collision_manager::aabb_to_circle(this->m_boundry, a_range))
 	{
@@ -99,16 +108,18 @@ void quad_tree::search(const circle & a_range, std::vector<boid*>& a_found_out, 
 		}
 		if (this->m_is_divided)
 		{
-			this->m_north_east->search(a_range, a_found_out);
-			this->m_north_west->search(a_range, a_found_out);
-			this->m_south_east->search(a_range, a_found_out);
-			this->m_south_west->search(a_range, a_found_out);
+			this->m_north_east->search(a_range, a_found_out, a_exclude_boid);
+			this->m_north_west->search(a_range, a_found_out, a_exclude_boid);
+			this->m_south_east->search(a_range, a_found_out, a_exclude_boid);
+			this->m_south_west->search(a_range, a_found_out, a_exclude_boid);
 		}
 	}
 }
 
 void quad_tree::clear()
 {
+	m_boids.clear();
+
 	if (m_is_divided)
 	{
 		delete this->m_north_east;
