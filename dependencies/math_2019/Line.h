@@ -21,6 +21,8 @@ public:
 	void set_distance(const float a_distance);
 
 	line & operator = (const line & a_rhs);
+	bool operator == (const line & a_rhs);
+	bool operator != (const line & a_rhs);
 
 private:
 	Vector2 m_normal = DEFAULT_NORMAL;

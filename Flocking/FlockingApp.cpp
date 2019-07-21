@@ -4,17 +4,14 @@
 #include <ctime>
 #include "Input.h"
 
-FlockingApp::FlockingApp() {
+FlockingApp::FlockingApp()
+{}
 
-}
-
-FlockingApp::~FlockingApp() {
-
-}
+FlockingApp::~FlockingApp() 
+{}
 
 bool FlockingApp::startup() 
 {
-	
 	srand(unsigned int(time(0)));
 
 	m_2dRenderer = new aie::Renderer2D();
@@ -25,12 +22,12 @@ bool FlockingApp::startup()
 
 	m_bird_sprite = new aie::Texture("../bin/textures/bird_sprite_sheet.png");
 
-	//m_actors.push_back(new actor(m_2dRenderer, m_bird_sprite, { (1.0f) * spacing, (1.0f) * spacing }));
-	m_window_dimentions = { float(getWindowWidth()), float(getWindowHeight()) };
+	//m_window_dimentions = { float(getWindowWidth()), float(getWindowHeight()) };
+	m_window_dimentions = { 500.0f, 500.0f };
 
 	m_flock = new flock(m_2dRenderer, m_bird_sprite);
 
-	m_flock->create_random_boids(40, m_window_dimentions);
+	m_flock->create_random_boids(5, m_window_dimentions);
 	//m_flock->create_boid(1, Vector2(2, 2));
 
 	m_input = aie::Input::getInstance();
@@ -38,7 +35,8 @@ bool FlockingApp::startup()
 	return true;
 }
 
-void FlockingApp::shutdown() {
+void FlockingApp::shutdown() 
+{
 
 	delete m_font;
 	delete m_2dRenderer;
@@ -46,11 +44,12 @@ void FlockingApp::shutdown() {
 	delete m_bird_sprite;
 }
 
-void FlockingApp::update(float deltaTime) {
-
+void FlockingApp::update(float deltaTime) 
+{
 	//deltaTime = 0.1;
 
 	m_window_dimentions = { float(getWindowWidth()), float(getWindowHeight()) };
+
 
 	m_flock->update(deltaTime, m_window_dimentions);
 
@@ -59,8 +58,8 @@ void FlockingApp::update(float deltaTime) {
 		quit();
 }
 
-void FlockingApp::draw() {
-
+void FlockingApp::draw() 
+{
 	// wipe the screen to the background colour
 	clearScreen();
 
@@ -68,7 +67,6 @@ void FlockingApp::draw() {
 	m_2dRenderer->begin();
 
 	// draw your stuff here!
-
 	m_flock->draw();
 
 	// output some text, uses the last used colour

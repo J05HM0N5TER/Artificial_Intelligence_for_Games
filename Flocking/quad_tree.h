@@ -21,7 +21,11 @@ public:
 	void search(const aabb & a_range, std::vector<boid*>& a_found_out, const boid* a_exclude_boid = nullptr) const;
 	void search(const circle & a_range, std::vector<boid*>& a_found_out, const boid* a_exclude_boid = nullptr) const;
 
+	// Deletes all sub quad_trees and deletes all stored boids.
 	void clear();
+
+	// Clears all stored boids.
+	void erase();
 
 	void draw(aie::Renderer2D* a_renerer) const;
 

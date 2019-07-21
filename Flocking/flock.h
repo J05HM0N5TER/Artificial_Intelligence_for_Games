@@ -11,10 +11,9 @@ public:
 	flock(aie::Renderer2D* a_renderer, aie::Texture* a_texture);
 	~flock();
 
-
 	void create_boid(int a_amount, Vector2& a_spawn_position);
 
-	void create_random_boids(int a_amount, Vector2& a_window_dimentions);
+	void create_random_boids(const size_t & a_amount, const Vector2 & a_window_dimentions);
 
 	void update(float a_delta_time, Vector2& a_window_dimentions);
 	void draw();
@@ -30,7 +29,11 @@ public:
 	float COHESION_FOECE_MAG = 20.0f;
 	float CIECLE_FORCE_MULT = 10.0f;
 	float ALIGHMENT_FORCE_MULT = 7.0f;
-private:
+	short QUAD_TREE_CAPACITY = 20;
+
+	Vector2 m_draw_size = { 10.0f * 1, 5.0f * 1 };
+//private:
+
 
 	quad_tree m_quad_tree;
 

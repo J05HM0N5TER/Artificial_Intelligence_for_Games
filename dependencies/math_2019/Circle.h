@@ -23,9 +23,12 @@ public:
 	void set_position(const Vector2 & a_position);
 
 	circle & operator = (const circle & a_rhs);
+	bool operator == (const circle & a_rhs);
+	bool operator != (const circle & a_rhs);
 
 private:
 	float m_radus = 0.0f;
+	// Position is centre of circle.
 	Vector2 m_position;
 };
 

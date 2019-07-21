@@ -27,8 +27,11 @@ public:
 	const Vector2 get_min() const;
 
 	aabb& operator = (const aabb & a_rhs);
+	bool operator == (const aabb & a_rhs);
+	bool operator != (const aabb & a_rhs);
 
 private:
+	// Position it the centre of the square
 	Vector2 m_position;
 
 	union

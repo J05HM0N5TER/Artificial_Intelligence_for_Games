@@ -2,14 +2,10 @@
 #include "flock.h"
 #include <iostream>
 
-boid::boid(aie::Renderer2D* a_renderer, aie::Texture* a_texture, Vector2& a_spawn_position, flock* a_flock) :
-	m_renderer(a_renderer), m_texture(a_texture), m_parent_flock(a_flock)
+boid::boid(Vector2& a_spawn_position, flock* a_flock) :
+	m_parent_flock(a_flock), m_position(a_spawn_position)
 {
-	m_draw_size = { 10.0f * 1, 5.0f * 1};
-
-	m_position = a_spawn_position;
-
-	m_velocity = Vector2( 0.0f, 30.0f );
+	m_velocity = Vector2(0.0f, 30.0f);
 
 	// If velocity is invalid.
 	float temp_mag = this->m_velocity.magnitude();
@@ -32,7 +28,7 @@ void boid::set_flock(flock * a_flock)
 }
 
 
-void boid::update(float a_delta_time, const Vector2& a_window_dimentions, const quad_tree & a_quad_tree)
+void boid::update(float a_delta_time, const Vector2 & a_window_dimentions, const quad_tree & a_quad_tree)
 {
 	m_sprite_timer += a_delta_time;
 
@@ -46,13 +42,25 @@ void boid::update(float a_delta_time, const Vector2& a_window_dimentions, const 
 		m_current_sprite = 0;
 	}
 
-	std::vector<boid*> search;
-
-	a_quad_tree.search(aabb(this->get_position(), Vector2(m_parent_flock->NEIGHBOUR_RADUS * 1.5f, m_parent_flock->NEIGHBOUR_RADUS * 1.5f)), search, this);
-
 	std::vector<boid*> neighbours;
 
-	for (boid* a_boid : search)
+	//a_quad_tree.search(circle(this->get_position(), m_parent_flock->NEIGHBOUR_RADUS), neighbours, this);
+
+	//std::vector<boid*> search;
+
+	//a_quad_tree.search(aabb(this->get_position(), Vector2(m_parent_flock->NEIGHBOUR_RADUS * 1.5f, m_parent_flock->NEIGHBOUR_RADUS * 1.5f)), search, this);
+
+	//for (boid* a_boid : search)
+	//{
+	//	// Check distance and if it is in the neighbourhood.
+	//	if ((a_boid->m_position - this->m_position).square_magnitude() < m_parent_flock->NEIGHBOUR_RADUS * m_parent_flock->NEIGHBOUR_RADUS)
+	//	{
+	//		neighbours.push_back(a_boid);
+	//	}
+	//}
+	//search.clear();
+
+	for (boid* a_boid : m_parent_flock->m_boids)
 	{
 		// Check distance and if it is in the neighbourhood.
 		if ((a_boid->m_position - this->m_position).square_magnitude() < m_parent_flock->NEIGHBOUR_RADUS * m_parent_flock->NEIGHBOUR_RADUS)
@@ -61,7 +69,6 @@ void boid::update(float a_delta_time, const Vector2& a_window_dimentions, const 
 		}
 	}
 
-	search.clear();
 
 
 	// ---Stay in a circle---
@@ -141,7 +148,7 @@ void boid::update(float a_delta_time, const Vector2& a_window_dimentions, const 
 	if (temp_mag <= 0.00001f)
 	{
 		// set to go east.
-		this->m_velocity = Vector2(m_parent_flock->BOID_SPEED, 0.0f );
+		this->m_velocity = Vector2(m_parent_flock->BOID_SPEED, 0.0f);
 	}
 	else
 	{
@@ -151,28 +158,28 @@ void boid::update(float a_delta_time, const Vector2& a_window_dimentions, const 
 
 	this->m_position += this->m_velocity * a_delta_time;
 
-	
+
 
 }
 
 void boid::draw()
 {
 	// Set current sprite in texture.
-	m_renderer->setUVRect(m_current_sprite / m_parent_flock->SPRITE_COUNT, 0, 1 / m_parent_flock->SPRITE_COUNT, 1);
+	m_parent_flock->m_renderer->setUVRect(m_current_sprite / m_parent_flock->SPRITE_COUNT, 0, 1 / m_parent_flock->SPRITE_COUNT, 1);
 
 	// Get the normalised velocity so that I don't have to call that function twice.
 	Vector2 normalised = this->m_velocity.normalised();
 
 	// Draw the sprite.
-	m_renderer->drawSprite(m_texture, m_position.x, m_position.y, m_draw_size.x, m_draw_size.y, atan2f(normalised.y, normalised.x) - 3.1415f / 2);
+	m_parent_flock->m_renderer->drawSprite(m_parent_flock->m_texture, m_position.x, m_position.y, m_parent_flock->m_draw_size.x, m_parent_flock->m_draw_size.y, atan2f(normalised.y, normalised.x) - 3.14159f / 2);
 
 	// Reset the UV rect for other things to use.
-	m_renderer->setUVRect(0, 0, 1, 1);
+	m_parent_flock->m_renderer->setUVRect(0, 0, 1, 1);
 
-	
+
 	//m_renderer->setRenderColour((rand() % 1000) / 1000.0f, (rand() % 1000) / 1000.0f, (rand() % 1000) / 1000.0f);
 
-	//m_renderer->drawCircle(m_position.x, m_position.y, 25.0f);
+	//m_parent_flock->m_renderer->drawCircle(m_position.x, m_position.y, 5.0f);
 
 	//m_renderer->setRenderColour(1, 1, 1);
 
