@@ -42,25 +42,9 @@ void boid::update(float a_delta_time, const Vector2 & a_window_dimentions, const
 		m_current_sprite = 0;
 	}
 
+	// Find neighbours.
 	std::vector<boid*> neighbours;
-
-	//a_quad_tree.search(circle(this->get_position(), m_flock->NEIGHBOUR_RADUS), neighbours, this);
-
-	std::vector<boid*> search;
-
-	// Find all boids in a square around the current boid.
-	a_quad_tree.search(aabb(this->get_position(), Vector2(m_flock->NEIGHBOUR_RADUS * 1.5f, m_flock->NEIGHBOUR_RADUS * 1.5f)), search, this);
-
-	// Loop though all found boids.
-	for (boid* a_boid : search)
-	{
-		// Check distance and if it is in the neighbourhood.
-		if ((a_boid->m_position - this->m_position).square_magnitude() < m_flock->NEIGHBOUR_RADUS * m_flock->NEIGHBOUR_RADUS)
-		{
-			neighbours.push_back(a_boid);
-		}
-	}
-	search.clear();
+	a_quad_tree.search(circle(this->get_position(), m_flock->NEIGHBOUR_RADUS), neighbours, this);
 
 
 	// ---Stay in a circle---
@@ -157,6 +141,7 @@ void boid::update(float a_delta_time, const Vector2 & a_window_dimentions, const
 		this->apply_force(boid_to_cursor);
 	}
 
+
 	// If velocity is invalid.
 	float temp_mag = this->m_velocity.magnitude();
 	if (temp_mag <= 0.00001f)
@@ -166,14 +151,13 @@ void boid::update(float a_delta_time, const Vector2 & a_window_dimentions, const
 	}
 	else
 	{
+		// Check that the boid is going the correct speed.
 		this->m_velocity /= temp_mag;
 		this->m_velocity *= m_flock->BOID_SPEED;
 	}
 
+	// Apply changes.
 	this->m_position += this->m_velocity * a_delta_time;
-
-
-
 }
 
 void boid::draw()

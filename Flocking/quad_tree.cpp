@@ -250,5 +250,5 @@ bool quad_tree::contains(const aabb & a_range, const boid * a_boid) const
 
 bool quad_tree::contains(const circle & a_range, const boid * a_boid) const
 {
-	return (a_boid->m_position - a_range.get_position()).square_magnitude() < a_range.get_radus();
+	return (a_boid->m_position - a_range.get_position()).square_magnitude() < a_range.get_radus() * a_range.get_radus();
 }
