@@ -38,27 +38,41 @@ void flock::create_random_boids(const size_t & a_amount, const Vector2 & a_windo
 }
 
 void flock::update(float a_delta_time, Vector2& a_window_dimentions)
-{	
-	//m_quad_tree.restart(aabb(a_window_dimentions * 0.5f, a_window_dimentions * 1.2f), QUAD_TREE_CAPACITY);
+{
+	static float timer = 0.0f;
+	timer += a_delta_time;
 
-	//for (boid* a_boid : m_boids)
-	//{
-	//	m_quad_tree.insert(a_boid);
-	//}
+	if (timer > 5.f)
+	{
+		m_quad_tree.clear();
+		timer -= 5.f;
+	}
+
+
+	m_quad_tree.restart(aabb(a_window_dimentions * 0.5f, a_window_dimentions * 1.2f), QUAD_TREE_CAPACITY);
+
+	for (boid* a_boid : m_boids)
+	{
+		m_quad_tree.insert(a_boid);
+	}
 
 	for (boid* a_boid : m_boids)
 	{
 		a_boid->update(a_delta_time, a_window_dimentions, m_quad_tree);
+		//a_boid->update(a_delta_time, a_window_dimentions);
 	}
 }
 
-void flock::draw()
+void flock::draw(bool a_draw_quad_tree)
 {
 	for (boid* a_boid : m_boids)
 	{
 		a_boid->draw();
 	}
 
-	//m_quad_tree.draw(m_renderer);
+	if (a_draw_quad_tree)
+	{
+		m_quad_tree.draw(m_renderer);
+	}
 }
 

@@ -46,21 +46,11 @@ void boid::update(float a_delta_time, const Vector2 & a_window_dimentions, const
 
 	//a_quad_tree.search(circle(this->get_position(), m_parent_flock->NEIGHBOUR_RADUS), neighbours, this);
 
-	//std::vector<boid*> search;
+	std::vector<boid*> search;
 
-	//a_quad_tree.search(aabb(this->get_position(), Vector2(m_parent_flock->NEIGHBOUR_RADUS * 1.5f, m_parent_flock->NEIGHBOUR_RADUS * 1.5f)), search, this);
+	a_quad_tree.search(aabb(this->get_position(), Vector2(m_parent_flock->NEIGHBOUR_RADUS * 1.5f, m_parent_flock->NEIGHBOUR_RADUS * 1.5f)), search, this);
 
-	//for (boid* a_boid : search)
-	//{
-	//	// Check distance and if it is in the neighbourhood.
-	//	if ((a_boid->m_position - this->m_position).square_magnitude() < m_parent_flock->NEIGHBOUR_RADUS * m_parent_flock->NEIGHBOUR_RADUS)
-	//	{
-	//		neighbours.push_back(a_boid);
-	//	}
-	//}
-	//search.clear();
-
-	for (boid* a_boid : m_parent_flock->m_boids)
+	for (boid* a_boid : search)
 	{
 		// Check distance and if it is in the neighbourhood.
 		if ((a_boid->m_position - this->m_position).square_magnitude() < m_parent_flock->NEIGHBOUR_RADUS * m_parent_flock->NEIGHBOUR_RADUS)
@@ -68,6 +58,18 @@ void boid::update(float a_delta_time, const Vector2 & a_window_dimentions, const
 			neighbours.push_back(a_boid);
 		}
 	}
+	search.clear();
+
+	//for (boid* a_boid : m_parent_flock->m_boids)
+	//{
+	//	if (a_boid == this)
+	//		continue;
+	//	// Check distance and if it is in the neighbourhood.
+	//	if ((a_boid->m_position - this->m_position).square_magnitude() < m_parent_flock->NEIGHBOUR_RADUS * m_parent_flock->NEIGHBOUR_RADUS)
+	//	{
+	//		neighbours.push_back(a_boid);
+	//	}
+	//}
 
 
 

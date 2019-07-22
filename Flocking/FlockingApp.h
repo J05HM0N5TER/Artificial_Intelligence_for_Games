@@ -20,6 +20,8 @@ public:
 
 protected:
 
+	bool m_draw_quad_tree;
+
 	aie::Texture* m_bird_sprite;
 
 	flock* m_flock;

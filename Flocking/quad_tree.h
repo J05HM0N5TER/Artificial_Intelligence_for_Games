@@ -25,7 +25,7 @@ public:
 	void clear();
 
 	// Clears all stored boids.
-	void erase();
+	void clear_boids();
 
 	void draw(aie::Renderer2D* a_renerer) const;
 
