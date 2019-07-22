@@ -340,8 +340,8 @@ void Application2D::draw()
 	// Initialise text (only done once)
 	static const char escape_text[] = "Press [ESC] to quit";
 	static const char left_mouse_text[] = "Left mouse to select nodes";
-	static const char shift_text[] = "Press and hold left shift and right mouse to deactivate nodes.";
-	static const char control_text[] = "Press and hold left control and right mouse to activate nodes.";
+	static const char shift_text[] = "Press and hold left shift and drag right mouse to deactivate nodes.";
+	static const char control_text[] = "Press and hold left control and drag right mouse to activate nodes.";
 	static const char right_mouse_text[] = "Press right mouse to toggle node.";
 	static const char colour_text[] = "Press [C] to toggle colour display.";
 	static const char algorithm_text[] = "Press [A] to switch algorithm.";
