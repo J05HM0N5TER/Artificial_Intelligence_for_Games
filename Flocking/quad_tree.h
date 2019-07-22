@@ -27,6 +27,9 @@ public:
 	// Clears all stored boids.
 	void clear_boids();
 
+	// Deletes all empty quad trees.
+	void remove_empty_trees();
+
 	void draw(aie::Renderer2D* a_renerer) const;
 
 private:

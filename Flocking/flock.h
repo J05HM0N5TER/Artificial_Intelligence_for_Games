@@ -4,6 +4,7 @@
 #include <vector>
 #include "boid.h"
 #include "quad_tree.h"
+#include "Input.h"
 
 class flock
 {
@@ -15,7 +16,7 @@ public:
 		\param a_renderer A pointer to the renderer for the window.
 		\param a_texture A pointer to the texture that the boids are being drawn as.
 	*/
-	flock(aie::Renderer2D* a_renderer, aie::Texture* a_texture);
+	flock(aie::Renderer2D* a_renderer, aie::Texture* a_texture, aie::Input* a_input);
 	~flock();
 
 	/*!	\brief Creates boids at specified position.
@@ -52,10 +53,13 @@ public:
 	float CIECLE_FORCE_MULT = 10.0f;
 	float ALIGHMENT_FORCE_MULT = 7.0f;
 	short QUAD_TREE_CAPACITY = 10;
+	float ATTRACT_MULT = 20.0f;
 
 	Vector2 m_draw_size = { 10.0f * 1, 5.0f * 1 };
 
 //private:
+
+	aie::Input* m_input;
 
 	// The quad tree that holds all of the boid*.
 	quad_tree m_quad_tree;

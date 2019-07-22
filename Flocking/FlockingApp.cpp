@@ -12,28 +12,22 @@ FlockingApp::~FlockingApp()
 
 bool FlockingApp::startup() 
 {
-	bool m_draw_quad_tree = false;
-
-	srand(unsigned int(time(0)));
-
-	m_2dRenderer = new aie::Renderer2D();
-
 	// TODO: remember to change this when redistributing a build!
 	// the following path would be used instead: "./font/consolas.ttf"
 	m_font = new aie::Font("../bin/font/consolas.ttf", 32);
-
 	m_bird_sprite = new aie::Texture("../bin/textures/bird_sprite_sheet.png");
 
-	m_window_dimentions = { float(getWindowWidth()), float(getWindowHeight()) };
-	//m_window_dimentions = { 500.0f, 550.0f };
-
-	m_flock = new flock(m_2dRenderer, m_bird_sprite);
-
-	m_flock->create_random_boids(10000, m_window_dimentions);
-	//m_flock->create_boid(1, Vector2(2, 2));
 
 	m_input = aie::Input::getInstance();
+	m_2dRenderer = new aie::Renderer2D();
 
+	bool m_draw_quad_tree = false;
+	m_window_dimentions = { float(getWindowWidth()), float(getWindowHeight()) };
+	m_flock = new flock(m_2dRenderer, m_bird_sprite, m_input);
+	size_t amount_of_boids = 10000;
+	m_flock->create_random_boids(amount_of_boids, m_window_dimentions);
+
+	srand(unsigned int(time(0)));
 	return true;
 }
 
@@ -56,6 +50,8 @@ void FlockingApp::update(float deltaTime)
 	//deltaTime = 0.1;
 
 	m_window_dimentions = { float(getWindowWidth()), float(getWindowHeight()) };
+
+
 
 
 	m_flock->update(deltaTime, m_window_dimentions);

@@ -114,13 +114,13 @@ void quad_tree::search(const circle & a_range, std::vector<boid*>& a_found_out, 
 		{
 			a_found_out.push_back(a_boid);
 		}
-		if (this->m_is_divided)
-		{
-			this->m_north_east->search(a_range, a_found_out, a_exclude_boid);
-			this->m_north_west->search(a_range, a_found_out, a_exclude_boid);
-			this->m_south_east->search(a_range, a_found_out, a_exclude_boid);
-			this->m_south_west->search(a_range, a_found_out, a_exclude_boid);
-		}
+	}
+	if (this->m_is_divided)
+	{
+		this->m_north_east->search(a_range, a_found_out, a_exclude_boid);
+		this->m_north_west->search(a_range, a_found_out, a_exclude_boid);
+		this->m_south_east->search(a_range, a_found_out, a_exclude_boid);
+		this->m_south_west->search(a_range, a_found_out, a_exclude_boid);
 	}
 }
 
@@ -159,23 +159,58 @@ void quad_tree::clear_boids()
 	}
 }
 
+void quad_tree::remove_empty_trees()
+{
+	if (m_is_divided)
+	{
+		return;
+	}
+
+	else if (m_north_east->m_boids.size() == 0 &&
+		m_north_west->m_boids.size() == 0 &&
+		m_south_east->m_boids.size() == 0 &&
+		m_south_west->m_boids.size() == 0)
+	{
+		delete this->m_north_east;
+		this->m_north_east = nullptr;
+
+		delete this->m_north_west;
+		this->m_north_west = nullptr;
+
+		delete this->m_south_east;
+		this->m_south_east = nullptr;
+
+		delete this->m_south_west;
+		this->m_south_west = nullptr;
+
+		this->m_is_divided = false;
+	}
+
+	else
+	{
+		m_north_east->remove_empty_trees();
+		m_north_west->remove_empty_trees();
+		m_south_east->remove_empty_trees();
+		m_south_west->remove_empty_trees();
+	}
+}
+
 void quad_tree::draw(aie::Renderer2D* a_renderer) const
 {
-	//if (m_boids.size() == 0)
-	//	return;
 
-	{
-		Vector2 min = this->m_boundry.get_min();
-		Vector2 max = this->m_boundry.get_max();
+	// Draw this quad tree.
+	Vector2 min = this->m_boundry.get_min();
+	Vector2 max = this->m_boundry.get_max();
 
-		a_renderer->drawLine(min.x, min.y, min.x, max.y);
-		a_renderer->drawLine(min.x, min.y, max.x, min.y);
-		a_renderer->drawLine(max.x, max.y, max.x, min.y);
-		a_renderer->drawLine(max.x, max.y, min.x, max.y);
-	}
+	a_renderer->drawLine(min.x, min.y, min.x, max.y);
+	a_renderer->drawLine(min.x, min.y, max.x, min.y);
+	a_renderer->drawLine(max.x, max.y, max.x, min.y);
+	a_renderer->drawLine(max.x, max.y, min.x, max.y);
+
 
 	if (m_is_divided)
 	{
+		// Draw the sub-trees.
 		this->m_north_east->draw(a_renderer);
 		this->m_north_west->draw(a_renderer);
 		this->m_south_east->draw(a_renderer);
@@ -215,5 +250,5 @@ bool quad_tree::contains(const aabb & a_range, const boid * a_boid) const
 
 bool quad_tree::contains(const circle & a_range, const boid * a_boid) const
 {
-	return collision_manager::circle_to_circle(a_range, circle(a_boid->get_position(), 0.f));
+	return (a_boid->m_position - a_range.get_position()).square_magnitude() < a_range.get_radus();
 }

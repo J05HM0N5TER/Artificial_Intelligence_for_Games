@@ -26,10 +26,9 @@ public:
 	Vector2 m_velocity;
 
 	float m_sprite_timer = 0.0f;
+	flock* m_flock;
+
 private:
-
-	flock* m_parent_flock;
-
 	char m_current_sprite = 0;
 };
 

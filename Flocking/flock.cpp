@@ -2,8 +2,8 @@
 #include <math.h>
 #include <fstream>
 
-flock::flock(aie::Renderer2D* a_renderer, aie::Texture* a_texture) :
-	m_renderer(a_renderer), m_texture(a_texture)
+flock::flock(aie::Renderer2D* a_renderer, aie::Texture* a_texture, aie::Input* a_input) :
+	m_renderer(a_renderer), m_texture(a_texture), m_input(a_input)
 {
 	m_quad_tree = quad_tree();
 }
@@ -39,13 +39,16 @@ void flock::create_random_boids(const size_t & a_amount, const Vector2 & a_windo
 
 void flock::update(float a_delta_time, Vector2& a_window_dimentions)
 {
+	// Delete the empty trees every set timer period.
 	static float timer = 0.0f;
 	timer += a_delta_time;
 
-	if (timer > 5.f)
+	static const float timer_max = 5.f;
+
+	if (timer > timer_max)
 	{
-		m_quad_tree.clear();
-		timer -= 5.f;
+		m_quad_tree.remove_empty_trees();
+		timer -= timer_max;
 	}
 
 
