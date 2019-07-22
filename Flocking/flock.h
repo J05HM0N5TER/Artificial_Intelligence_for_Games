@@ -59,6 +59,9 @@ public:
 
 //private:
 
+	bool m_left_mouse_down;
+	bool m_right_mouse_down;
+
 	aie::Input* m_input;
 
 	// The quad tree that holds all of the boid*.

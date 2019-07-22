@@ -59,6 +59,9 @@ void flock::update(float a_delta_time, Vector2& a_window_dimentions)
 		m_quad_tree.insert(a_boid);
 	}
 
+	m_left_mouse_down = m_input->isMouseButtonDown(aie::INPUT_MOUSE_BUTTON_LEFT);
+	m_right_mouse_down = m_input->isMouseButtonDown(aie::INPUT_MOUSE_BUTTON_RIGHT);
+
 	for (boid* a_boid : m_boids)
 	{
 		a_boid->update(a_delta_time, a_window_dimentions, m_quad_tree);

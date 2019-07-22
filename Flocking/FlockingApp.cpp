@@ -24,7 +24,7 @@ bool FlockingApp::startup()
 	bool m_draw_quad_tree = false;
 	m_window_dimentions = { float(getWindowWidth()), float(getWindowHeight()) };
 	m_flock = new flock(m_2dRenderer, m_bird_sprite, m_input);
-	size_t amount_of_boids = 10000;
+	size_t amount_of_boids = 3000;
 	m_flock->create_random_boids(amount_of_boids, m_window_dimentions);
 
 	srand(unsigned int(time(0)));
@@ -77,7 +77,9 @@ void FlockingApp::draw()
 	sprintf_s(fps, 32, "FPS: %i", getFPS());
 	m_2dRenderer->drawText(m_font, fps, 0, m_window_dimentions.y - 32);
 	m_2dRenderer->drawText(m_font, "Press ESC to quit", 0, 0);
-	m_2dRenderer->drawText(m_font, "Press Q to toggle drawing quad tree", 0, 32);
+	m_2dRenderer->drawText(m_font, "Press Q to toggle drawing quad tree", 0, 32/*Font hight*/);
+	m_2dRenderer->drawText(m_font, "Hold left mouse to attract boids", 0, 32/*Font hight*/ * 2);
+	m_2dRenderer->drawText(m_font, "Hold right mouse to repel boids", 0, 32/*Font hight*/ * 3);
 
 	// done drawing sprites
 	m_2dRenderer->end();

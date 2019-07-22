@@ -122,19 +122,40 @@ void boid::update(float a_delta_time, const Vector2 & a_window_dimentions, const
 
 	
 	// --Cursor interaction--
-	Vector2 mouse_pos(float(m_flock->m_input->getMouseX()), float(m_flock->m_input->getMouseY()));
-	Vector2 boid_to_cursor = mouse_pos - this->m_position;
 
-	float force_magnitude = boid_to_cursor.magnitude();
+	// Attract with left mouse button..
+	if (m_flock->m_left_mouse_down)
+	{
+		Vector2 mouse_pos(float(m_flock->m_input->getMouseX()), float(m_flock->m_input->getMouseY()));
+		Vector2 boid_to_cursor = mouse_pos - this->m_position;
 
-	force_magnitude *= 0.1f;
-	force_magnitude = m_flock->ATTRACT_MULT * 10000.0f / (force_magnitude * force_magnitude);
+		float force_magnitude = boid_to_cursor.magnitude();
 
-	boid_to_cursor /= boid_to_cursor.magnitude();
-	boid_to_cursor *= force_magnitude;
+		force_magnitude *= 0.1f;
+		force_magnitude = m_flock->ATTRACT_MULT * 10000.0f / (force_magnitude * force_magnitude);
 
-	this->apply_force(boid_to_cursor);
+		boid_to_cursor /= boid_to_cursor.magnitude();
+		boid_to_cursor *= force_magnitude;
+
+		this->apply_force(boid_to_cursor);
+	}
 	
+	// Force away with right mouse button.
+	if (m_flock->m_right_mouse_down)
+	{
+		Vector2 mouse_pos(float(m_flock->m_input->getMouseX()), float(m_flock->m_input->getMouseY()));
+		Vector2 boid_to_cursor = mouse_pos - this->m_position;
+
+		float force_magnitude = boid_to_cursor.magnitude();
+
+		force_magnitude *= 0.1f;
+		force_magnitude = m_flock->ATTRACT_MULT * -(10000.0f / (force_magnitude * force_magnitude));
+
+		boid_to_cursor /= boid_to_cursor.magnitude();
+		boid_to_cursor *= force_magnitude;
+
+		this->apply_force(boid_to_cursor);
+	}
 
 	// If velocity is invalid.
 	float temp_mag = this->m_velocity.magnitude();
