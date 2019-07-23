@@ -15,6 +15,7 @@ public:
 	~quad_tree();
 
 	void restart(aabb & a_boundry, const int & a_capacity = 4);
+	void restart(aabb & a_boundry, std::vector<boid*> a_boids, const int & a_capacity = 4);
 
 	bool insert(boid * a_boid);
 

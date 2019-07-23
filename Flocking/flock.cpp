@@ -39,25 +39,9 @@ void flock::create_random_boids(const size_t & a_amount, const Vector2 & a_windo
 
 void flock::update(float a_delta_time, Vector2& a_window_dimentions)
 {
-	// Delete the empty trees every set timer period.
-	static float timer = 0.0f;
-	timer += a_delta_time;
-
-	static const float timer_max = 5.f;
-
-	if (timer > timer_max)
-	{
-		m_quad_tree.remove_empty_trees();
-		timer -= timer_max;
-	}
+	m_quad_tree.restart(aabb(a_window_dimentions * 0.5f, a_window_dimentions * 1.2f), this->m_boids, QUAD_TREE_CAPACITY);
 
 
-	m_quad_tree.restart(aabb(a_window_dimentions * 0.5f, a_window_dimentions * 1.2f), QUAD_TREE_CAPACITY);
-
-	for (boid* a_boid : m_boids)
-	{
-		m_quad_tree.insert(a_boid);
-	}
 
 	m_left_mouse_down = m_input->isMouseButtonDown(aie::INPUT_MOUSE_BUTTON_LEFT);
 	m_right_mouse_down = m_input->isMouseButtonDown(aie::INPUT_MOUSE_BUTTON_RIGHT);

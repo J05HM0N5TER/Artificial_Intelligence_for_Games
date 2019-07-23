@@ -15,19 +15,27 @@ quad_tree::~quad_tree()
 
 void quad_tree::restart(aabb & a_boundry, const int & a_capacity)
 {
-	if (a_boundry == this->m_boundry && this->m_capacity == a_capacity)
+	this->clear();
+
+	m_capacity = a_capacity;
+
+	m_boundry = a_boundry;
+}
+
+void quad_tree::restart(aabb & a_boundry, std::vector<boid*> a_boids, const int & a_capacity)
+{
+	this->clear_boids();
+
+	m_capacity = a_capacity;
+
+	m_boundry = a_boundry;
+
+	for (boid* a_boid : m_boids)
 	{
-		this->clear_boids();
-	}
-	else
-	{
-		this->clear();
-
-		m_capacity = a_capacity;
-
-		m_boundry = a_boundry;
+		this->insert(a_boid);
 	}
 
+	this->remove_empty_trees();
 }
 
 bool quad_tree::insert(boid * a_boid)
@@ -197,19 +205,25 @@ void quad_tree::remove_empty_trees()
 
 void quad_tree::draw(aie::Renderer2D* a_renderer) const
 {
-
 	// Draw this quad tree.
-	Vector2 min = this->m_boundry.get_min();
-	Vector2 max = this->m_boundry.get_max();
+	//Vector2 min = this->m_boundry.get_min();
+	//Vector2 max = this->m_boundry.get_max();
 
-	a_renderer->drawLine(min.x, min.y, min.x, max.y);
-	a_renderer->drawLine(min.x, min.y, max.x, min.y);
-	a_renderer->drawLine(max.x, max.y, max.x, min.y);
-	a_renderer->drawLine(max.x, max.y, min.x, max.y);
-
+	//a_renderer->drawLine(min.x, min.y, min.x, max.y);
+	//a_renderer->drawLine(min.x, min.y, max.x, min.y);
+	//a_renderer->drawLine(max.x, max.y, max.x, min.y);
+	//a_renderer->drawLine(max.x, max.y, min.x, max.y);
 
 	if (m_is_divided)
 	{
+
+		// Draw this quad tree.
+		Vector2 min = this->m_boundry.get_min();
+		Vector2 max = this->m_boundry.get_max();
+
+		a_renderer->drawLine(min.x, (max.y + min.y) / 2, max.x, (max.y + min.y) / 2);
+		a_renderer->drawLine((max.x + min.x) / 2, min.y, (max.x + min.x) / 2, max.y);
+
 		// Draw the sub-trees.
 		this->m_north_east->draw(a_renderer);
 		this->m_north_west->draw(a_renderer);
