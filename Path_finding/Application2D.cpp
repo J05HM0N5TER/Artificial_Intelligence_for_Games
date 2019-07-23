@@ -1,3 +1,4 @@
+
 #include "Application2D.h"
 #include "Texture.h"
 #include "Font.h"
@@ -230,15 +231,15 @@ void Application2D::draw()
 	// Vector to store the colour that the node/edge is going to be displayed in.
 	Vector3 display_colour{};
 
-	// Work out max_f_score for use with the colour picker.
-	float max_f_score = 0;
+	// Work out max_g_score for use with the colour picker.
+	float max_g_score = 0;
 	if (colour_display)
 	{
 		// Loop though all nodes ...
 		for (auto& a_node : m_graph->m_nodes)
 		{
 			// ... and compare to find the largest g_score.
-			max_f_score = (a_node->get_f_score() > max_f_score) ? a_node->get_f_score() : max_f_score;
+			max_g_score = (a_node->get_g_score() > max_g_score) ? a_node->get_g_score() : max_g_score;
 		}
 	}
 
@@ -257,7 +258,7 @@ void Application2D::draw()
 				lowest_node = (lowest_node == a_edge->m_nodes[0]) ? a_edge->m_nodes[1] : a_edge->m_nodes[0];
 			}
 			// Get the colour using the node of the lowest g_score.
-			display_colour = colour_picker(lowest_node, max_f_score);
+			display_colour = colour_picker(lowest_node, max_g_score);
 
 			// Display using colour.
 			m_2dRenderer->setRenderColour(display_colour.r, display_colour.g, display_colour.b, 1);
@@ -291,7 +292,7 @@ void Application2D::draw()
 		if (a_node->is_valid())
 		{
 			// Get colour.
-			display_colour = colour_picker(a_node, max_f_score);
+			display_colour = colour_picker(a_node, max_g_score);
 
 			// Display using colour.
 			m_2dRenderer->setRenderColour(display_colour.r, display_colour.g, display_colour.b, 1);
@@ -409,7 +410,7 @@ void Application2D::draw()
 	m_2dRenderer->end();
 }
 
-Vector3 Application2D::colour_picker(node<Vector2>* a_node, float a_mox_f_score)
+Vector3 Application2D::colour_picker(node<Vector2>* a_node, float a_mox_g_score)
 {
 	Vector3 output(0.0f, 0.0f, 0.0f);
 
@@ -425,10 +426,10 @@ Vector3 Application2D::colour_picker(node<Vector2>* a_node, float a_mox_f_score)
 		else
 		{
 			// Calculate green value off of g score.
-			output.g = 1 - (a_node->get_f_score() / (float)a_mox_f_score);
+			output.g = 1.f - (a_node->get_g_score() / a_mox_g_score);
 
 		    // Calculate red value off of green value.
-			output.r = 1 - output.g;
+			output.r = 1.f - output.g;
 		}
 	}
 	// If the display is set to not have colour.
