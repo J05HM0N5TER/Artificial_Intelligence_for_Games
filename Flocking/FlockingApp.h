@@ -28,8 +28,6 @@ protected:
 
 	aie::Input* m_input;
 
-	Vector2 m_window_dimentions;
-
 	aie::Renderer2D*	m_2dRenderer;
 	aie::Font*			m_font;
 };

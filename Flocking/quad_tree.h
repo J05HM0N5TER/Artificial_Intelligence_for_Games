@@ -17,6 +17,8 @@ public:
 	void restart(aabb & a_boundry, const int & a_capacity = 4);
 	void restart(aabb & a_boundry, std::vector<boid*> a_boids, const int & a_capacity = 4);
 
+	void update(std::vector<boid*> a_boids);
+
 	bool insert(boid * a_boid);
 
 	void search(const aabb & a_range, std::vector<boid*>& a_found_out, const boid* a_exclude_boid = nullptr) const;

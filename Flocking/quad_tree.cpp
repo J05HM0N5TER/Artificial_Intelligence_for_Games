@@ -13,7 +13,7 @@ quad_tree::~quad_tree()
 	this->clear();
 }
 
-void quad_tree::restart(aabb & a_boundry, const int & a_capacity)
+void quad_tree::restart(aabb & a_boundry, const int & a_capacity/* = 4*/)
 {
 	this->clear();
 
@@ -22,15 +22,24 @@ void quad_tree::restart(aabb & a_boundry, const int & a_capacity)
 	m_boundry = a_boundry;
 }
 
-void quad_tree::restart(aabb & a_boundry, std::vector<boid*> a_boids, const int & a_capacity)
+void quad_tree::restart(aabb & a_boundry, std::vector<boid*> a_boids, const int & a_capacity/* = 4*/)
 {
-	this->clear_boids();
+	this->clear();
 
 	m_capacity = a_capacity;
-
 	m_boundry = a_boundry;
 
 	for (boid* a_boid : m_boids)
+	{
+		this->insert(a_boid);
+	}
+}
+
+void quad_tree::update(std::vector<boid*> a_boids)
+{
+	this->clear_boids();
+
+	for (boid* a_boid : a_boids)
 	{
 		this->insert(a_boid);
 	}
@@ -169,7 +178,7 @@ void quad_tree::clear_boids()
 
 void quad_tree::remove_empty_trees()
 {
-	if (m_is_divided)
+	if (!m_is_divided)
 	{
 		return;
 	}

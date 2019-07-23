@@ -32,7 +32,7 @@ public:
 	void create_random_boids(const size_t & a_amount, const Vector2 & a_window_dimentions);
 
 	//	\brief Updates the position for the boids to be drawn at.
-	void update(float a_delta_time, Vector2& a_window_dimentions);
+	void update(float a_delta_time, const size_t & a_window_dimentions_x, const size_t & a_window_dimentions_y);
 
 	/*	\brief Draws the boids on screen.
 		\param a_draw_quad_tree True if the quad tree is being drawn

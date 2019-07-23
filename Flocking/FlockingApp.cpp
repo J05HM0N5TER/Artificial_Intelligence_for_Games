@@ -22,10 +22,10 @@ bool FlockingApp::startup()
 	m_2dRenderer = new aie::Renderer2D();
 
 	bool m_draw_quad_tree = false;
-	m_window_dimentions = { float(getWindowWidth()), float(getWindowHeight()) };
 	m_flock = new flock(m_2dRenderer, m_bird_sprite, m_input);
 	size_t amount_of_boids = 3000;
-	m_flock->create_random_boids(amount_of_boids, m_window_dimentions);
+	Vector2 window_dimensions = { float(getWindowWidth()), float(getWindowHeight()) };
+	m_flock->create_random_boids(amount_of_boids, window_dimensions);
 
 	srand(unsigned int(time(0)));
 	return true;
@@ -48,13 +48,8 @@ void FlockingApp::update(float deltaTime)
 	}
 
 	//deltaTime = 0.1;
-
-	m_window_dimentions = { float(getWindowWidth()), float(getWindowHeight()) };
-
-
-
-
-	m_flock->update(deltaTime, m_window_dimentions);
+	
+	m_flock->update(deltaTime, getWindowWidth(), getWindowHeight());
 
 	// exit the application
 	if (m_input->isKeyDown(aie::INPUT_KEY_ESCAPE))
@@ -75,7 +70,7 @@ void FlockingApp::draw()
 	// output some text, uses the last used colour
 	char fps[32];
 	sprintf_s(fps, 32, "FPS: %i", getFPS());
-	m_2dRenderer->drawText(m_font, fps, 0, m_window_dimentions.y - 32);
+	m_2dRenderer->drawText(m_font, fps, 0, getWindowHeight() - 32);
 	m_2dRenderer->drawText(m_font, "Press ESC to quit", 0, 0);
 	m_2dRenderer->drawText(m_font, "Press Q to toggle drawing quad tree", 0, 32/*Font hight*/);
 	m_2dRenderer->drawText(m_font, "Hold left mouse to attract boids", 0, 32/*Font hight*/ * 2);

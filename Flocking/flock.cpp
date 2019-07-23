@@ -37,9 +37,24 @@ void flock::create_random_boids(const size_t & a_amount, const Vector2 & a_windo
 	}
 }
 
-void flock::update(float a_delta_time, Vector2& a_window_dimentions)
+void flock::update(float a_delta_time, const size_t & a_window_dimensions_x, const size_t & a_window_dimensions_y)
 {
-	m_quad_tree.restart(aabb(a_window_dimentions * 0.5f, a_window_dimentions * 1.2f), this->m_boids, QUAD_TREE_CAPACITY);
+	static bool initilised = false;
+	static int previous_window_x;
+	static int previous_window_y;
+	Vector2 window_dimensions = { float(a_window_dimensions_x), float(a_window_dimensions_y) };
+	if (!initilised)
+	{
+		previous_window_x = a_window_dimensions_x;
+		previous_window_y = a_window_dimensions_y;
+		m_quad_tree.restart(aabb(window_dimensions *0.5f, window_dimensions * 1.2f), this->m_boids, QUAD_TREE_CAPACITY);
+	}
+
+	// Only restart the quad_tree if the dimensions have changed.
+	if (previous_window_x == a_window_dimensions_x && previous_window_y == a_window_dimensions_y)
+		m_quad_tree.update(m_boids);
+	else if (initilised)
+		m_quad_tree.restart(aabb(window_dimensions *0.5f, window_dimensions * 1.2f), this->m_boids, QUAD_TREE_CAPACITY);
 
 
 
@@ -48,9 +63,13 @@ void flock::update(float a_delta_time, Vector2& a_window_dimentions)
 
 	for (boid* a_boid : m_boids)
 	{
-		a_boid->update(a_delta_time, a_window_dimentions, m_quad_tree);
+		a_boid->update(a_delta_time, window_dimensions, m_quad_tree);
 		//a_boid->update(a_delta_time, a_window_dimentions);
 	}
+
+	previous_window_x = a_window_dimensions_x;
+	previous_window_y = a_window_dimensions_y;
+	initilised = true;
 }
 
 void flock::draw(bool a_draw_quad_tree)
