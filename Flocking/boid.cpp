@@ -116,7 +116,7 @@ void boid::update(float a_delta_time, const Vector2 & a_window_dimentions, const
 		float force_magnitude = boid_to_cursor.magnitude();
 
 		force_magnitude *= 0.1f;
-		force_magnitude = m_flock->ATTRACT_MULT * 10000.0f / (force_magnitude * force_magnitude);
+		force_magnitude = m_flock->ATTRACT_MULT / (force_magnitude * force_magnitude);
 
 		boid_to_cursor /= boid_to_cursor.magnitude();
 		boid_to_cursor *= force_magnitude;
@@ -133,7 +133,7 @@ void boid::update(float a_delta_time, const Vector2 & a_window_dimentions, const
 		float force_magnitude = boid_to_cursor.magnitude();
 
 		force_magnitude *= 0.1f;
-		force_magnitude = m_flock->ATTRACT_MULT * -(10000.0f / (force_magnitude * force_magnitude));
+		force_magnitude = m_flock->REPEL_MULT / (force_magnitude * force_magnitude);
 
 		boid_to_cursor /= boid_to_cursor.magnitude();
 		boid_to_cursor *= force_magnitude;
@@ -156,32 +156,82 @@ void boid::update(float a_delta_time, const Vector2 & a_window_dimentions, const
 		this->m_velocity *= m_flock->BOID_SPEED;
 	}
 
+
+	// Cheat controls (These can change the speed of the boid so they are not technically correct boids then.)
+	if (m_flock->m_shift_held)
+	{
+		if (m_flock->m_right_mouse_down && m_flock->m_left_mouse_down)
+		{
+			m_position = { float(m_flock->m_input->getMouseX()) + float(rand() % 100 - 50), 
+				float(m_flock->m_input->getMouseY()) + float(rand() % 100 - 50) };
+		}
+
+		// Attract with left mouse button..
+		else if (m_flock->m_left_mouse_down)
+		{
+			Vector2 mouse_pos(float(m_flock->m_input->getMouseX()), float(m_flock->m_input->getMouseY()));
+			Vector2 boid_to_cursor = mouse_pos - this->m_position;
+
+			float force_magnitude = boid_to_cursor.magnitude();
+
+			force_magnitude *= 0.1f;
+			force_magnitude = m_flock->ATTRACT_MULT / (force_magnitude * force_magnitude);
+
+			boid_to_cursor /= boid_to_cursor.magnitude();
+			boid_to_cursor *= force_magnitude;
+
+			this->apply_force(boid_to_cursor);
+		}
+
+		// Force away with right mouse button.
+		else if (m_flock->m_right_mouse_down)
+		{
+			Vector2 mouse_pos(float(m_flock->m_input->getMouseX()), float(m_flock->m_input->getMouseY()));
+			Vector2 boid_to_cursor = mouse_pos - this->m_position;
+
+			float force_magnitude = boid_to_cursor.magnitude();
+
+			force_magnitude *= 0.1f;
+			force_magnitude = m_flock->REPEL_MULT / (force_magnitude * force_magnitude);
+
+			boid_to_cursor /= boid_to_cursor.magnitude();
+			boid_to_cursor *= force_magnitude;
+
+			this->apply_force(boid_to_cursor);
+		}
+	}
+
 	// Apply changes.
 	this->m_position += this->m_velocity * a_delta_time;
 }
 
 void boid::draw()
 {
-	// Set current sprite in texture.
-	m_flock->m_renderer->setUVRect(m_current_sprite / m_flock->SPRITE_COUNT, 0, 1 / m_flock->SPRITE_COUNT, 1);
+	// Draw as texture--
 
-	// Get the normalised velocity so that I don't have to call that function twice.
+	// Set current sprite in texture.
+	m_flock->m_renderer->setUVRect(m_current_sprite / m_flock->SPRITE_COUNT, 
+		0, 1 / m_flock->SPRITE_COUNT, 1);
+
+	// Cache normalised velocity.
 	Vector2 normalised = this->m_velocity.normalised();
 
 	// Draw the sprite.
-	m_flock->m_renderer->drawSprite(m_flock->m_texture, m_position.x, m_position.y, m_flock->m_draw_size.x, m_flock->m_draw_size.y, atan2f(normalised.y, normalised.x) - 3.14159f / 2);
+	m_flock->m_renderer->drawSprite(m_flock->m_texture, m_position.x, m_position.y, 
+		m_flock->m_draw_size.x, m_flock->m_draw_size.y, 
+		atan2f(normalised.y, normalised.x) - 3.14159f / 2);
 
 	// Reset the UV rect for other things to use.
 	m_flock->m_renderer->setUVRect(0, 0, 1, 1);
 	
 
 
+	// -- Draw as circle--
 	//m_renderer->setRenderColour((rand() % 1000) / 1000.0f, (rand() % 1000) / 1000.0f, (rand() % 1000) / 1000.0f);
 
 	//m_flock->m_renderer->drawCircle(m_position.x, m_position.y, 3.0f);
 
 	//m_renderer->setRenderColour(1, 1, 1);
-
 }
 
 void boid::apply_force(Vector2 & a_force)

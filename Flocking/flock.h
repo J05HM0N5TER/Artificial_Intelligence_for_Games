@@ -53,7 +53,8 @@ public:
 	float CIECLE_FORCE_MULT = 10.0f;
 	float ALIGHMENT_FORCE_MULT = 7.0f;
 	short QUAD_TREE_CAPACITY = 10;
-	float ATTRACT_MULT = 20.0f;
+	float ATTRACT_MULT = 20.0f * 10000.f;
+	float REPEL_MULT = -(20.0f * 10000.f);
 
 	Vector2 m_draw_size = { 10.0f * 1, 5.0f * 1 };
 
@@ -61,6 +62,7 @@ public:
 
 	bool m_left_mouse_down;
 	bool m_right_mouse_down;
+	bool m_shift_held;
 
 	aie::Input* m_input;
 
