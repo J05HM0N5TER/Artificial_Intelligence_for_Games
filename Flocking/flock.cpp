@@ -3,8 +3,7 @@
 #include <fstream>
 
 flock::flock(aie::Renderer2D* a_renderer, aie::Texture* a_texture, aie::Input* a_input) :
-	m_renderer(a_renderer), m_texture(a_texture), m_input(a_input), m_left_mouse_down(false), 
-	m_right_mouse_down(false), m_shift_held(false)
+	m_renderer(a_renderer), m_texture(a_texture), m_input(a_input)
 {
 	m_quad_tree = quad_tree();
 }
@@ -51,10 +50,6 @@ void flock::update(float a_delta_time, const size_t & a_window_dimensions_x, con
 		m_quad_tree.restart(aabb(window_dimensions *0.5f, window_dimensions * 1.2f), this->m_boids, QUAD_TREE_CAPACITY);
 	}
 
-	m_left_mouse_down = m_input->isMouseButtonDown(aie::INPUT_MOUSE_BUTTON_LEFT);
-	m_right_mouse_down = m_input->isMouseButtonDown(aie::INPUT_MOUSE_BUTTON_RIGHT);
-	m_shift_held = m_input->isKeyDown(aie::INPUT_KEY_LEFT_SHIFT) || m_input->isKeyDown(aie::INPUT_KEY_RIGHT_SHIFT);
-
 	for (boid* a_boid : m_boids)
 	{
 		a_boid->update(a_delta_time, window_dimensions, m_quad_tree);
@@ -83,5 +78,20 @@ void flock::draw(bool a_draw_quad_tree)
 	{
 		m_quad_tree.draw(m_renderer);
 	}
+}
+
+void flock::clear()
+{
+	// Delete all boids.
+	for (int i = (int)m_boids.size() - 1; i >= 0; i--)
+	{
+		boid* temp = m_boids[i];
+		m_boids.erase(m_boids.begin() + i);
+		delete temp;
+	}
+
+	m_boids.clear();
+	m_boids.shrink_to_fit();
+	m_quad_tree.clear();
 }
 

@@ -6,6 +6,12 @@
 #include "Input.h"
 #include "quad_tree.h"
 
+enum class GAME_STATE
+{
+	START,
+	ACTIVE
+};
+
 class FlockingApp : public aie::Application {
 public:
 
@@ -18,7 +24,18 @@ public:
 	virtual void update(float deltaTime);
 	virtual void draw();
 
+	void active_update(float deltaTime);
+	void active_draw();
+
+	void start_update(float deltaTime);
+	void start_draw();
+
+
 protected:
+
+	std::vector<char> m_user_number;
+
+	GAME_STATE current_state;
 
 	bool m_draw_quad_tree;
 

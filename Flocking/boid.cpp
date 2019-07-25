@@ -108,7 +108,7 @@ void boid::update(float a_delta_time, const Vector2 & a_window_dimentions, const
 	// --Cursor interaction--
 
 	// Attract with left mouse button..
-	if (m_flock->m_left_mouse_down)
+	if (m_flock->m_input->isMouseButtonDown(aie::INPUT_MOUSE_BUTTON_LEFT))
 	{
 		Vector2 mouse_pos(float(m_flock->m_input->getMouseX()), float(m_flock->m_input->getMouseY()));
 		Vector2 boid_to_cursor = mouse_pos - this->m_position;
@@ -125,7 +125,7 @@ void boid::update(float a_delta_time, const Vector2 & a_window_dimentions, const
 	}
 	
 	// Force away with right mouse button.
-	if (m_flock->m_right_mouse_down)
+	if (m_flock->m_input->isMouseButtonDown(aie::INPUT_MOUSE_BUTTON_RIGHT))
 	{
 		Vector2 mouse_pos(float(m_flock->m_input->getMouseX()), float(m_flock->m_input->getMouseY()));
 		Vector2 boid_to_cursor = mouse_pos - this->m_position;
@@ -158,16 +158,16 @@ void boid::update(float a_delta_time, const Vector2 & a_window_dimentions, const
 
 
 	// Cheat controls (These can change the speed of the boid so they are not technically correct boids then.)
-	if (m_flock->m_shift_held)
+	if (m_flock->m_input->isKeyDown(aie::INPUT_KEY_LEFT_SHIFT) || m_flock->m_input->isKeyDown(aie::INPUT_KEY_RIGHT_SHIFT))
 	{
-		if (m_flock->m_right_mouse_down && m_flock->m_left_mouse_down)
+		if (m_flock->m_input->isKeyDown(aie::INPUT_KEY_T))
 		{
 			m_position = { float(m_flock->m_input->getMouseX()) + float(rand() % 100 - 50), 
 				float(m_flock->m_input->getMouseY()) + float(rand() % 100 - 50) };
 		}
 
 		// Attract with left mouse button..
-		else if (m_flock->m_left_mouse_down)
+		else if (m_flock->m_input->isMouseButtonDown(aie::INPUT_MOUSE_BUTTON_LEFT))
 		{
 			Vector2 mouse_pos(float(m_flock->m_input->getMouseX()), float(m_flock->m_input->getMouseY()));
 			Vector2 boid_to_cursor = mouse_pos - this->m_position;
@@ -184,7 +184,7 @@ void boid::update(float a_delta_time, const Vector2 & a_window_dimentions, const
 		}
 
 		// Force away with right mouse button.
-		else if (m_flock->m_right_mouse_down)
+		else if (m_flock->m_input->isMouseButtonDown(aie::INPUT_MOUSE_BUTTON_RIGHT))
 		{
 			Vector2 mouse_pos(float(m_flock->m_input->getMouseX()), float(m_flock->m_input->getMouseY()));
 			Vector2 boid_to_cursor = mouse_pos - this->m_position;

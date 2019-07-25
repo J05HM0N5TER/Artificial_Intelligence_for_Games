@@ -39,6 +39,9 @@ public:
 	*/
 	void draw(bool a_draw_quad_tree);
 
+	// \brief Clears the flock of all boids.
+	void clear();
+
 	// The vector that holds all the boids in the flock.
 	std::vector<boid*> m_boids;
 
@@ -60,9 +63,6 @@ public:
 
 //private:
 
-	bool m_left_mouse_down;
-	bool m_right_mouse_down;
-	bool m_shift_held;
 
 	aie::Input* m_input;
 
