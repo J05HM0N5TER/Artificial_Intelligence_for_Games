@@ -40,8 +40,8 @@ void flock::create_random_boids(const size_t & a_amount, const Vector2 & a_windo
 void flock::update(float a_delta_time, const size_t & a_window_dimensions_x, const size_t & a_window_dimensions_y)
 {
 	static bool initilised = false;
-	static int previous_window_x;
-	static int previous_window_y;
+	static size_t previous_window_x;
+	static size_t previous_window_y;
 	Vector2 window_dimensions = { float(a_window_dimensions_x), float(a_window_dimensions_y) };
 	if (!initilised)
 	{
