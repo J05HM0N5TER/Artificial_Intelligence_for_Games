@@ -26,6 +26,7 @@ bool FlockingApp::startup()
 	// Set up flock.
 	m_flock = new flock(m_2dRenderer, m_bird_sprite, m_input);
 	m_draw_quad_tree = false;
+	m_use_circle_boundry = false;
 
 	srand(unsigned int(time(0)));
 	return true;
@@ -124,8 +125,12 @@ void FlockingApp::active_update(float deltaTime)
 		m_flock->clear();
 		current_state = GAME_STATE::START;
 	}
+	if (m_input->wasKeyPressed(aie::INPUT_KEY_B))
+	{
+		m_use_circle_boundry = !m_use_circle_boundry;
+	}
 
-	m_flock->update(deltaTime, getWindowWidth(), getWindowHeight());
+	m_flock->update(deltaTime, getWindowWidth(), getWindowHeight(), m_use_circle_boundry);
 }
 
 void FlockingApp::active_draw()
@@ -185,6 +190,7 @@ void FlockingApp::active_draw()
 	}
 	m_2dRenderer->drawText(m_font, "Press numbers to change simulation speed", 0, 32.f/*Font hight*/ * text_layer++);
 	m_2dRenderer->drawText(m_font, "Press R to reset", 0, 32.f/*Font hight*/ * text_layer++);
+	m_2dRenderer->drawText(m_font, "Press B to change boundary", getWindowWidth() / 2, 0);
 }
 
 void FlockingApp::start_update(float deltaTime)

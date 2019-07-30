@@ -40,7 +40,7 @@ void flock::create_random_boids(const size_t & a_amount,
 }
 
 void flock::update(float a_delta_time, const size_t & a_window_dimensions_x, 
-	const size_t & a_window_dimensions_y)
+	const size_t & a_window_dimensions_y, bool a_circle_boundry/* = true*/)
 {
 	static bool initilised = false;
 	static size_t previous_window_x;
@@ -56,7 +56,7 @@ void flock::update(float a_delta_time, const size_t & a_window_dimensions_x,
 
 	for (boid* a_boid : m_boids)
 	{
-		a_boid->update(a_delta_time, window_dimensions, m_quad_tree);
+		a_boid->update(a_delta_time, window_dimensions, m_quad_tree, a_circle_boundry);
 	}
 
 	// Only restart the quad_tree if the dimensions have changed.

@@ -43,6 +43,7 @@ protected:
 
 	// True if the user wants to draw the quad tree -set to false by default-.
 	bool m_draw_quad_tree;
+	bool m_use_circle_boundry;
 
 	// The texture that is used for the boids.
 	aie::Texture* m_bird_sprite;

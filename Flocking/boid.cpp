@@ -31,8 +31,8 @@ void boid::set_flock(flock * a_flock)
 }
 
 
-void boid::update(float a_delta_time, const Vector2 & a_window_dimentions, 
-	const quad_tree & a_quad_tree)
+void boid::update(float a_delta_time, const Vector2 & a_window_dimensions, 
+	const quad_tree & a_quad_tree, bool a_circle_boundry/* = true*/)
 {
 	// -- Update sprite --
 	m_sprite_timer += a_delta_time;
@@ -53,16 +53,47 @@ void boid::update(float a_delta_time, const Vector2 & a_window_dimentions,
 		neighbours, this);
 
 
-	// -- Stay in a circle --
-	Vector2 world_centre(a_window_dimentions / 2);
-	Vector2 to_centre = world_centre - this->m_position;
-	float to_centre_mag = to_centre.magnitude();
-	float distance_outside_circle = to_centre_mag - a_window_dimentions.y / 2;
-	if (distance_outside_circle > 0.0f)
+	if (a_circle_boundry)
 	{
-		to_centre /= to_centre_mag;
-		to_centre *= distance_outside_circle * m_flock->CIECLE_FORCE_MULT;
-		this->apply_force(to_centre);
+		// -- Stay in a circle --
+		Vector2 world_centre(a_window_dimensions / 2);
+		Vector2 to_centre = world_centre - this->m_position;
+		float to_centre_mag = to_centre.magnitude();
+		float distance_outside_circle = to_centre_mag - a_window_dimensions.y / 2;
+		if (distance_outside_circle > 0.0f)
+		{
+			to_centre /= to_centre_mag;
+			to_centre *= distance_outside_circle * m_flock->CIECLE_FORCE_MULT;
+			this->apply_force(to_centre);
+		}
+	}
+	else
+	{
+		// -- Stay in a square --
+		aabb boundry = { a_window_dimensions / 2, a_window_dimensions * 0.8f };
+		Vector2 max = boundry.get_max();
+		Vector2 min = boundry.get_min();
+
+
+		if ((this->get_position().x <= min.x ||
+			this->get_position().x >= max.x ||
+			this->get_position().y <= min.y ||
+			this->get_position().y >= max.y))
+		{
+			Vector2 nearest_point_in_square;
+			nearest_point_in_square.x = ((this->m_position.x > max.x) ? max.x :
+				(this->m_position.x < min.x) ? min.x : this->m_position.x);
+
+			nearest_point_in_square.y = ((this->m_position.y > max.y) ? max.y :
+				(this->m_position.y < min.y) ? min.y : this->m_position.y);
+
+			Vector2 to_square = nearest_point_in_square - this->m_position;
+			float to_square_mag = to_square.magnitude();
+
+			to_square /= to_square_mag;
+			to_square *= to_square_mag / 8 * m_flock->CIECLE_FORCE_MULT;
+			this->apply_force(to_square);
+		}
 	}
 
 

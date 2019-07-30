@@ -32,9 +32,14 @@ public:
 	void create_random_boids(const size_t & a_amount, 
 		const Vector2 & a_window_dimentions);
 
-	//	\brief Updates the position for the boids to be drawn at.
+	/*	\brief Updates the position for the boids to be drawn at.
+		\param a_delta_time The time that has passed since last frame.
+		\param a_window_dimensions_x The size of the window in the x dimension.
+		\param a_window_dimensions_y The size of the window in the y dimension.
+		\param circle_boundry If the boid is using a circle boundary.
+	*/
 	void update(float a_delta_time, const size_t & a_window_dimentions_x, 
-		const size_t & a_window_dimentions_y);
+		const size_t & a_window_dimentions_y, bool a_circle_boundry = true);
 
 	/*	\brief Draws the boids on screen.
 		\param a_draw_quad_tree True if the quad tree is being drawn
