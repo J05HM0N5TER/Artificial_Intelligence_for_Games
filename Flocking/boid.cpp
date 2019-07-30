@@ -20,6 +20,9 @@ boid::boid(Vector2& a_spawn_position, flock* a_flock) :
 		this->m_velocity *= m_flock->BOID_SPEED;
 	}
 
+	// Set the sprite timer to a random amount so that the animation all match up.
+	this->m_sprite_timer = fmod(float(rand()) / RAND_MAX, a_flock->SPRITE_ANIMATION_DELAY);
+
 }
 
 void boid::set_flock(flock * a_flock)
@@ -28,8 +31,10 @@ void boid::set_flock(flock * a_flock)
 }
 
 
-void boid::update(float a_delta_time, const Vector2 & a_window_dimentions, const quad_tree & a_quad_tree)
+void boid::update(float a_delta_time, const Vector2 & a_window_dimentions, 
+	const quad_tree & a_quad_tree)
 {
+	// -- Update sprite --
 	m_sprite_timer += a_delta_time;
 
 	if (m_sprite_timer > m_flock->SPRITE_ANIMATION_DELAY)
@@ -44,10 +49,11 @@ void boid::update(float a_delta_time, const Vector2 & a_window_dimentions, const
 
 	// Find neighbours.
 	std::vector<boid*> neighbours;
-	a_quad_tree.search(circle(this->get_position(), m_flock->NEIGHBOUR_RADUS), neighbours, this);
+	a_quad_tree.search(circle(this->get_position(), m_flock->NEIGHBOUR_RADUS), 
+		neighbours, this);
 
 
-	// ---Stay in a circle---
+	// -- Stay in a circle --
 	Vector2 world_centre(a_window_dimentions / 2);
 	Vector2 to_centre = world_centre - this->m_position;
 	float to_centre_mag = to_centre.magnitude();
@@ -60,7 +66,7 @@ void boid::update(float a_delta_time, const Vector2 & a_window_dimentions, const
 	}
 
 
-	// --Separation--
+	// -- Separation --
 	Vector2 seperation_force;
 	for (boid* a_neighbour : neighbours)
 	{
@@ -73,7 +79,7 @@ void boid::update(float a_delta_time, const Vector2 & a_window_dimentions, const
 	this->apply_force(seperation_force);
 
 
-	// --Cohesion--
+	// -- Cohesion --
 	if (neighbours.size() > 0)
 	{
 		Vector2 average_neighbour_position;
@@ -91,7 +97,7 @@ void boid::update(float a_delta_time, const Vector2 & a_window_dimentions, const
 	}
 
 
-	// --Alignment--
+	// -- Alignment --
 	if (neighbours.size() > 0)
 	{
 		Vector2 average_neighbour_velocity;
@@ -105,12 +111,14 @@ void boid::update(float a_delta_time, const Vector2 & a_window_dimentions, const
 	}
 
 	
-	// --Cursor interaction--
+	// -- Cursor interaction --
+
+	Vector2 mouse_pos(float(m_flock->m_input->getMouseX()), 
+		float(m_flock->m_input->getMouseY()));
 
 	// Attract with left mouse button..
 	if (m_flock->m_input->isMouseButtonDown(aie::INPUT_MOUSE_BUTTON_LEFT))
 	{
-		Vector2 mouse_pos(float(m_flock->m_input->getMouseX()), float(m_flock->m_input->getMouseY()));
 		Vector2 boid_to_cursor = mouse_pos - this->m_position;
 
 		float force_magnitude = boid_to_cursor.magnitude();
@@ -127,7 +135,6 @@ void boid::update(float a_delta_time, const Vector2 & a_window_dimentions, const
 	// Force away with right mouse button.
 	if (m_flock->m_input->isMouseButtonDown(aie::INPUT_MOUSE_BUTTON_RIGHT))
 	{
-		Vector2 mouse_pos(float(m_flock->m_input->getMouseX()), float(m_flock->m_input->getMouseY()));
 		Vector2 boid_to_cursor = mouse_pos - this->m_position;
 
 		float force_magnitude = boid_to_cursor.magnitude();
@@ -158,7 +165,8 @@ void boid::update(float a_delta_time, const Vector2 & a_window_dimentions, const
 
 
 	// Cheat controls (These can change the speed of the boid so they are not technically correct boids then.)
-	if (m_flock->m_input->isKeyDown(aie::INPUT_KEY_LEFT_SHIFT) || m_flock->m_input->isKeyDown(aie::INPUT_KEY_RIGHT_SHIFT))
+	if (m_flock->m_input->isKeyDown(aie::INPUT_KEY_LEFT_SHIFT) || 
+		m_flock->m_input->isKeyDown(aie::INPUT_KEY_RIGHT_SHIFT))
 	{
 		if (m_flock->m_input->isKeyDown(aie::INPUT_KEY_T))
 		{
@@ -169,7 +177,6 @@ void boid::update(float a_delta_time, const Vector2 & a_window_dimentions, const
 		// Attract with left mouse button..
 		else if (m_flock->m_input->isMouseButtonDown(aie::INPUT_MOUSE_BUTTON_LEFT))
 		{
-			Vector2 mouse_pos(float(m_flock->m_input->getMouseX()), float(m_flock->m_input->getMouseY()));
 			Vector2 boid_to_cursor = mouse_pos - this->m_position;
 
 			float force_magnitude = boid_to_cursor.magnitude();
@@ -186,7 +193,6 @@ void boid::update(float a_delta_time, const Vector2 & a_window_dimentions, const
 		// Force away with right mouse button.
 		else if (m_flock->m_input->isMouseButtonDown(aie::INPUT_MOUSE_BUTTON_RIGHT))
 		{
-			Vector2 mouse_pos(float(m_flock->m_input->getMouseX()), float(m_flock->m_input->getMouseY()));
 			Vector2 boid_to_cursor = mouse_pos - this->m_position;
 
 			float force_magnitude = boid_to_cursor.magnitude();
@@ -207,8 +213,7 @@ void boid::update(float a_delta_time, const Vector2 & a_window_dimentions, const
 
 void boid::draw()
 {
-	// Draw as texture--
-
+	// -- Draw as texture --
 	// Set current sprite in texture.
 	m_flock->m_renderer->setUVRect(m_current_sprite / m_flock->SPRITE_COUNT, 
 		0, 1 / m_flock->SPRITE_COUNT, 1);
@@ -225,13 +230,14 @@ void boid::draw()
 	m_flock->m_renderer->setUVRect(0, 0, 1, 1);
 	
 
+	/*
+	// -- Draw as circle --
+	m_renderer->setRenderColour((rand() % 1000) / 1000.0f, (rand() % 1000) / 1000.0f, (rand() % 1000) / 1000.0f);
 
-	// -- Draw as circle--
-	//m_renderer->setRenderColour((rand() % 1000) / 1000.0f, (rand() % 1000) / 1000.0f, (rand() % 1000) / 1000.0f);
+	m_flock->m_renderer->drawCircle(m_position.x, m_position.y, 3.0f);
 
-	//m_flock->m_renderer->drawCircle(m_position.x, m_position.y, 3.0f);
-
-	//m_renderer->setRenderColour(1, 1, 1);
+	m_renderer->setRenderColour(1, 1, 1);
+	*/
 }
 
 void boid::apply_force(Vector2 & a_force)

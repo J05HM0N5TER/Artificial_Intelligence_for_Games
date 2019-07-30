@@ -12,7 +12,8 @@ public:
 
 	void set_flock(flock* a_flock);
 
-	void update(float a_delta_time, const Vector2& a_window_dimentions, const quad_tree & a_quad_tree);
+	void update(float a_delta_time, const Vector2& a_window_dimentions, 
+		const quad_tree & a_quad_tree);
 	void draw();
 
 	void apply_force(Vector2& a_force);
@@ -22,10 +23,14 @@ public:
 
 	const float get_radus() const;
 
+	// The current position of the boid.
 	Vector2 m_position;
+	// The current velocity -The speed is constant so this only is used for direction-.
 	Vector2 m_velocity;
 
 	float m_sprite_timer = 0.0f;
+
+	// Pointer to the parent flock.
 	flock* m_flock;
 
 private:

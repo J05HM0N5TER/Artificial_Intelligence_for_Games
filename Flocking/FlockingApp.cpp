@@ -23,6 +23,7 @@ bool FlockingApp::startup()
 	m_input = aie::Input::getInstance();
 	m_2dRenderer = new aie::Renderer2D();
 
+	// Set up flock.
 	m_flock = new flock(m_2dRenderer, m_bird_sprite, m_input);
 	m_draw_quad_tree = false;
 
@@ -32,7 +33,6 @@ bool FlockingApp::startup()
 
 void FlockingApp::shutdown()
 {
-
 	delete m_font;
 	delete m_2dRenderer;
 	delete m_flock;
@@ -41,6 +41,7 @@ void FlockingApp::shutdown()
 
 void FlockingApp::update(float deltaTime)
 {
+	// Go to correct game state function.
 	switch (current_state)
 	{
 	case GAME_STATE::START:
@@ -66,6 +67,7 @@ void FlockingApp::draw()
 	// begin drawing sprites
 	m_2dRenderer->begin();
 
+	// Go to correct game state function.
 	switch (current_state)
 	{
 	case GAME_STATE::START:
@@ -77,7 +79,6 @@ void FlockingApp::draw()
 	default:
 		break;
 	}
-
 
 	// done drawing sprites
 	m_2dRenderer->end();
@@ -113,6 +114,7 @@ void FlockingApp::active_update(float deltaTime)
 			deltaTime *= i;
 	}
 
+	// Check other inputs.
 	if (m_input->wasKeyReleased(aie::INPUT_KEY_Q))
 	{
 		m_draw_quad_tree = !m_draw_quad_tree;
@@ -123,20 +125,18 @@ void FlockingApp::active_update(float deltaTime)
 		current_state = GAME_STATE::START;
 	}
 
-	//deltaTime = 0.1;
-
 	m_flock->update(deltaTime, getWindowWidth(), getWindowHeight());
 }
 
 void FlockingApp::active_draw()
 {
-
+	// Draw a red point in the centre of the screen.
 	m_2dRenderer->setRenderColour(.5f, 0.f, 0.f);
-	//m_2dRenderer->drawCircle(getWindowWidth() * 0.5f, getWindowHeight() * 0.5f, 1.f);
 	m_2dRenderer->drawBox(getWindowWidth() * 0.5f, getWindowHeight() * 0.5f, 1, 1);
+
+	// Set colour back to default.
 	m_2dRenderer->setRenderColour(1.f, 1.f, 1.f);
 
-	// draw your stuff here!
 	m_flock->draw(m_draw_quad_tree);
 	if (m_draw_quad_tree)
 	{
@@ -144,10 +144,14 @@ void FlockingApp::active_draw()
 		float window_height = float(getWindowHeight());
 		float windwo_width = float(getWindowWidth());
 
-		m_2dRenderer->drawLine(-(windwo_width * 0.1f), -(window_height * 0.1f), windwo_width * 1.1f, -(window_height * 0.1f));
-		m_2dRenderer->drawLine(-(windwo_width * 0.1f), -(window_height * 0.1f), -(windwo_width * 0.1f), window_height * 1.1f);
-		m_2dRenderer->drawLine(windwo_width * 1.1f, window_height * 1.1f, -(windwo_width * 0.1f), window_height * 1.1f);
-		m_2dRenderer->drawLine(windwo_width * 1.1f, window_height * 1.1f, windwo_width * 1.1f, -(window_height * 0.1f));
+		m_2dRenderer->drawLine(-(windwo_width * 0.1f), -(window_height * 0.1f),
+			windwo_width * 1.1f, -(window_height * 0.1f));
+		m_2dRenderer->drawLine(-(windwo_width * 0.1f), -(window_height * 0.1f), 
+			-(windwo_width * 0.1f), window_height * 1.1f);
+		m_2dRenderer->drawLine(windwo_width * 1.1f, window_height * 1.1f, 
+			-(windwo_width * 0.1f), window_height * 1.1f);
+		m_2dRenderer->drawLine(windwo_width * 1.1f, window_height * 1.1f, 
+			windwo_width * 1.1f, -(window_height * 0.1f));
 	}
 
 	short int text_layer = 0;
@@ -156,20 +160,28 @@ void FlockingApp::active_draw()
 	char fps[32];
 	sprintf_s(fps, 32, "FPS: %i", getFPS());
 	m_2dRenderer->drawText(m_font, fps, 0, getWindowHeight() - 32.f);
-	m_2dRenderer->drawText(m_font, "Press ESC to quit", 0, 32.f/*Font hight*/ * text_layer++);
-	m_2dRenderer->drawText(m_font, "Press Q to toggle drawing quad tree", 0, 32.f/*Font hight*/ * text_layer++);
+	m_2dRenderer->drawText(m_font, "Press ESC to quit", 0, 
+		32.f/*Font hight*/ * text_layer++);
+	m_2dRenderer->drawText(m_font, "Press Q to toggle drawing quad tree", 0, 
+		32.f/*Font hight*/ * text_layer++);
+
 	if (m_input->isKeyDown(aie::INPUT_KEY_LEFT_SHIFT) || m_input->isKeyDown(aie::INPUT_KEY_RIGHT_SHIFT))
 	{
 		//m_2dRenderer->drawText(m_font, "release shift to switch to regular controls.", 0, 32/*Font hight*/ * text_layer++);
-		m_2dRenderer->drawText(m_font, "Hold left mouse to attract boids fast", 0, 32.f/*Font hight*/ * text_layer++);
-		m_2dRenderer->drawText(m_font, "Hold right mouse to repel boids fast", 0, 32.f/*Font hight*/ * text_layer++);
-		m_2dRenderer->drawText(m_font, "press T to teleport boids to mouse", 0, 32.f/*Font hight*/ * text_layer++);
+		m_2dRenderer->drawText(m_font, "Hold left mouse to attract boids fast", 0, 
+			32.f/*Font hight*/ * text_layer++);
+		m_2dRenderer->drawText(m_font, "Hold right mouse to repel boids fast", 0, 
+			32.f/*Font hight*/ * text_layer++);
+		m_2dRenderer->drawText(m_font, "press T to teleport boids to mouse", 0, 
+			32.f/*Font hight*/ * text_layer++);
 	}
 	else
 	{
 		//m_2dRenderer->drawText(m_font, "Hold shift to switch to cheat controls.", 0, 32/*Font hight*/ * text_layer++);
-		m_2dRenderer->drawText(m_font, "Hold left mouse to attract boids", 0, 32.f/*Font hight*/ * text_layer++);
-		m_2dRenderer->drawText(m_font, "Hold right mouse to repel boids", 0, 32.f/*Font hight*/ * text_layer++);
+		m_2dRenderer->drawText(m_font, "Hold left mouse to attract boids", 0, 
+			32.f/*Font hight*/ * text_layer++);
+		m_2dRenderer->drawText(m_font, "Hold right mouse to repel boids", 0, 
+			32.f/*Font hight*/ * text_layer++);
 	}
 	m_2dRenderer->drawText(m_font, "Press numbers to change simulation speed", 0, 32.f/*Font hight*/ * text_layer++);
 	m_2dRenderer->drawText(m_font, "Press R to reset", 0, 32.f/*Font hight*/ * text_layer++);
@@ -191,7 +203,7 @@ void FlockingApp::start_update(float deltaTime)
 			m_user_number.pop_back();
 	}
 
-
+	// If confirmation.
 	if (m_input->wasKeyPressed(aie::INPUT_KEY_ENTER))
 	{
 		size_t amount_of_boids = 0;
@@ -239,22 +251,29 @@ void FlockingApp::start_draw()
 	float window_height = float(getWindowHeight());
 	float window_width = float(getWindowWidth());
 
+	// Draw a white box around the numbers the user in entering.
 	m_2dRenderer->setRenderColour(1.f, 1.f, 1.f);
-	m_2dRenderer->drawBox(getWindowWidth() / 2.f, window_height / 2.f + number_string_height / 2.f, number_string_width + 40.f, number_string_height + 40.f);
+	m_2dRenderer->drawBox(getWindowWidth() / 2.f, 
+		window_height / 2.f + number_string_height / 2.f, number_string_width + 40.f, 
+		number_string_height + 40.f);
 	m_2dRenderer->setRenderColour(0.8f, 0.2f, 0.f);
 
 	// Display number.
-	m_2dRenderer->drawText(m_font, user_number_display, window_width / 2.f - number_string_width / 2.f, window_height / 2.f);
+	m_2dRenderer->drawText(m_font, user_number_display, 
+		window_width / 2.f - number_string_width / 2.f, window_height / 2.f);
 
 	// Display instructions.
 	char instructions[] = "Enter the amount of boids you want and press enter to continue.";
-	m_2dRenderer->drawText(m_font, instructions, window_width / 2.f - m_font->getStringWidth(instructions) / 2.f, window_height - 32);
+	m_2dRenderer->drawText(m_font, instructions, 
+		window_width / 2.f - m_font->getStringWidth(instructions) / 2.f, 
+		window_height - 32);
 
 	char instruction2[] = "Be careful on the amount because too many will cause a crash!";
-	m_2dRenderer->drawText(m_font, instruction2, window_width / 2.f - m_font->getStringWidth(instruction2) / 2.f, window_height - 32 * 2);
+	m_2dRenderer->drawText(m_font, instruction2, 
+		window_width / 2.f - m_font->getStringWidth(instruction2) / 2.f,
+		window_height - 32 * 2);
 
+	// Clean up.
 	delete[] user_number_display;
 	m_2dRenderer->setRenderColour(1.f, 1.f, 1.f);
-
-	//m_2dRenderer->drawText()
 }
