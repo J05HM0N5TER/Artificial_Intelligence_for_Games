@@ -17,9 +17,9 @@ void quad_tree::restart(aabb & a_boundry, const int & a_capacity/* = 4*/)
 {
 	this->clear();
 
-	m_capacity = a_capacity;
+	this->m_capacity = a_capacity;
 
-	m_boundry = a_boundry;
+	this->m_boundry = a_boundry;
 }
 
 void quad_tree::restart(aabb & a_boundry, std::vector<boid*> & a_boids, 
@@ -27,11 +27,11 @@ void quad_tree::restart(aabb & a_boundry, std::vector<boid*> & a_boids,
 {
 	this->clear();
 
-	m_capacity = a_capacity;
-	m_boundry = a_boundry;
+	this->m_capacity = a_capacity;
+	this->m_boundry = a_boundry;
 
 	// Add all boids.
-	for (boid* a_boid : m_boids)
+	for (boid* a_boid : this->m_boids)
 	{
 		this->insert(a_boid);
 	}
@@ -64,7 +64,7 @@ bool quad_tree::insert(boid * a_boid)
 	else if (this->m_boids.size() < this->m_capacity)
 	{
 		// insert into the boids.
-		m_boids.push_back(a_boid);
+		this->m_boids.push_back(a_boid);
 		return true;
 	}
 
@@ -72,9 +72,9 @@ bool quad_tree::insert(boid * a_boid)
 	else
 	{
 		// divide if necessary.
-		if (!m_is_divided)
+		if (!this->m_is_divided)
 		{
-			sub_divide();
+			this->sub_divide();
 		}
 		bool has_inserted = false;
 
@@ -104,7 +104,7 @@ void quad_tree::search(const aabb & a_range, std::vector<boid*>& a_found_out,
 		return;
 	}
 
-	for (boid* a_boid : m_boids)
+	for (boid* a_boid : this->m_boids)
 	{
 		if (a_boid == a_exclude_boid)
 			continue;
@@ -130,7 +130,7 @@ void quad_tree::search(const circle & a_range, std::vector<boid*>& a_found_out,
 	{
 		return;
 	}
-	for (boid* a_boid : m_boids)
+	for (boid* a_boid : this->m_boids)
 	{
 		if (a_boid == a_exclude_boid)
 			continue;
@@ -151,9 +151,9 @@ void quad_tree::search(const circle & a_range, std::vector<boid*>& a_found_out,
 
 void quad_tree::clear()
 {
-	m_boids.clear();
+	this->m_boids.clear();
 
-	if (m_is_divided)
+	if (this->m_is_divided)
 	{
 		delete this->m_north_east;
 		this->m_north_east = nullptr;
@@ -187,16 +187,16 @@ void quad_tree::clear_boids()
 void quad_tree::remove_empty_trees()
 {
 	// If it is not divided then it has no trees to check.
-	if (!m_is_divided)
+	if (!this->m_is_divided)
 	{
 		return;
 	}
 
 	// If all sub-trees are empty then delete them.
-	else if (m_north_east->m_boids.size() == 0 &&
-		m_north_west->m_boids.size() == 0 &&
-		m_south_east->m_boids.size() == 0 &&
-		m_south_west->m_boids.size() == 0)
+	else if (this->m_north_east->m_boids.size() == 0 &&
+		this->m_north_west->m_boids.size() == 0 &&
+		this->m_south_east->m_boids.size() == 0 &&
+		this->m_south_west->m_boids.size() == 0)
 	{
 		delete this->m_north_east;
 		this->m_north_east = nullptr;
@@ -216,16 +216,16 @@ void quad_tree::remove_empty_trees()
 	// If the sub-trees have something in them then request for them to check.
 	else
 	{
-		m_north_east->remove_empty_trees();
-		m_north_west->remove_empty_trees();
-		m_south_east->remove_empty_trees();
-		m_south_west->remove_empty_trees();
+		this->m_north_east->remove_empty_trees();
+		this->m_north_west->remove_empty_trees();
+		this->m_south_east->remove_empty_trees();
+		this->m_south_west->remove_empty_trees();
 	}
 }
 
 void quad_tree::draw(aie::Renderer2D* a_renderer) const
 {
-	if (m_is_divided)
+	if (this->m_is_divided)
 	{
 
 		// Draw this quad tree.
@@ -262,7 +262,7 @@ void quad_tree::sub_divide()
 	this->m_south_west = new quad_tree(aabb({ x - (width / 4), y - (height / 4) },
 		half_extents), this->m_capacity);
 
-	m_is_divided = true;
+	this->m_is_divided = true;
 }
 
 bool quad_tree::contains(const aabb & a_range, const boid * a_boid) const
