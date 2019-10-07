@@ -42,24 +42,40 @@ void Agent::update(float a_delta_time)
 void Agent::seek(float a_delta_time)
 {
 	Vector2 target_direction = m_target_position - Vector2(m_transform.position.x, m_transform.position.y);
+	float distance = target_direction.magnitude();
+	target_direction.normalise();
 
 	// Rotate towards
 	float dot_fowards = target_direction.dot(Vector2(m_transform.forwards.x, m_transform.forwards.y));
 	float dot_right = target_direction.dot(Vector2(m_transform.right.x, m_transform.right.y));
 
-	// Turn right
-	if (dot_right > 0.f)
+	// If not facing target
+	if (dot_fowards < 0.995f)
 	{
-		Matrix3 rotation_matrix = Matrix3();
-		rotation_matrix.setRotateZ(-m_turn_speed * a_delta_time);
-		m_transform = m_transform * rotation_matrix;
+		// Turn right
+		if (dot_right > 0.f)
+		{
+			Matrix3 rotation_matrix = Matrix3();
+			rotation_matrix.setRotateZ(-m_turn_speed * a_delta_time);
+			m_transform = m_transform * rotation_matrix;
+		}
+		// Turn left
+		else
+		{
+			Matrix3 rotation = Matrix3();
+			rotation.setRotateZ(m_turn_speed * a_delta_time);
+			m_transform = m_transform * rotation;
+		}
 	}
-	// Turn left
-	else
+
+	// Move towards
+	m_transform.position += m_transform.forwards * a_delta_time * m_max_speed * dot_fowards;
+
+	// Check if arrived
+	if (distance < m_arrival_distance)
 	{
-		Matrix3 rotation = Matrix3();
-		rotation.setRotateZ(m_turn_speed * a_delta_time);
-		m_transform = m_transform * rotation;
+		// If arrived - Wander
+		m_current_state = WANDER;
 	}
 
 }

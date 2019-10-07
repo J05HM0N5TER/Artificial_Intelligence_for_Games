@@ -8,8 +8,9 @@ public:
 	Matrix3 m_transform;
 	//Vector2& m_position = Vector2(m_transform.position);
 
-	float m_max_speed = 10.f; // Units per second 
+	float m_max_speed = 50.f; // Units per second 
 	float m_turn_speed = 1.5f; // Radians per second
+	float m_arrival_distance = 50.f;
 
 	Vector2 m_target_position;
 	Vector2 m_screen_center = Vector2(1280, 720) * 0.5f;
