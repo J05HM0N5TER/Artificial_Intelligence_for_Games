@@ -64,14 +64,14 @@ void Steering_behavioursApp::draw() {
 		float start_x = m_agent->m_transform.position.x;
 		float start_y = m_agent->m_transform.position.y;
 		Vector2 end = { start_x, start_y };
-		end += Vector2(m_agent->m_transform.forwards.x, m_agent->m_transform.forwards.y) * m_agent->wander_projection;
+		end += Vector2(m_agent->m_transform.forwards.x, m_agent->m_transform.forwards.y) * m_agent->m_wander_projection;
 		float end_x = end.x;
 		float end_y = end.y;
 		m_2dRenderer->drawLine(start_x, start_y, end_x, end_y);
 
-		m_2dRenderer->drawCircle(end_x, end_y, m_agent->wander_radus);
+		m_2dRenderer->drawCircle(end_x, end_y, m_agent->m_wander_radus);
 		m_2dRenderer->setRenderColour(0, 0, 0, 1);
-		m_2dRenderer->drawCircle(end_x, end_y, m_agent->wander_radus - 1);
+		m_2dRenderer->drawCircle(end_x, end_y, m_agent->m_wander_radus - 1);
 		m_2dRenderer->setRenderColour(1, 1, 1, 1);
 
 		m_2dRenderer->setRenderColour(1, 0, 0);
@@ -79,6 +79,21 @@ void Steering_behavioursApp::draw() {
 		m_2dRenderer->setRenderColour(1, 1, 1);
 	}
 
+
+	switch (m_agent->m_current_state)
+	{
+	case Agent::FLEE:
+		m_2dRenderer->drawText(m_font, "State: Flee", 0, 32);
+		break;
+	case Agent::WANDER:
+		m_2dRenderer->drawText(m_font, "State: Wander", 0, 32);
+		break;
+	case Agent::SEEK:
+		m_2dRenderer->drawText(m_font, "State: Seek", 0, 32);
+		break;
+	default:
+		break;
+	}
 
 	// output some text, uses the last used colour
 	m_2dRenderer->drawText(m_font, "Press ESC to quit", 0, 0);
